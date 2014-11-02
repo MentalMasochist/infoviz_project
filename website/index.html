@@ -1,17 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="heigh=100%">
 	<head>
 		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>	
-	<body>
-		<form> 
-		<!-- primary selection menu -->
-			<div align="right" action"query.php" method="get">
-				Subjects: <input type="text" name="subject" size="25"> <br>
-				Authors: <input type="text" name="authors" size="25"> <br>
-				Keywords: <input type="text" name="keywords" size="25"> <br>
-				<input type="submit" value="search arXiv" align="left">	<br>
-			</div>
-		</form>
+	<body style="height:100%">
+
+		<div id="header">
+			<h1>arXiv connectivity visualization</h1>
+		</div>	
+
+		<div id="viz_trend">
+			<h1>viz_trend</h1>	
+		</div>
+
+		<div id="menu">
+			<form> 
+				<div align="right" action"query.php" method="post">
+					Subjects: <input type="text" name="subject" style="width:90%"> <br>
+					Authors: <input type="text" name="authors" style="width:90%"> <br>
+					Keywords: <input type="text" name="keywords" style="width:90%"> <br>
+					<input type="submit" value="search arXiv" align="left">	<br>
+				</div>
+			</form>
+		</div>	
+
+		<div id="viz_graph_subject">
+			<h1>viz_graph_subject</h1>	
+		</div>	
+
+		<div id="viz_graph_author">
+			<h1>viz_graph_author</h1>
+		</div>	
+
+		<div id="viz_word_cloud">
+			<h1>viz_word_cloud</h1>	
+		</div>	
+
+		<div id="extra">
+			<h1>extra</h1>
+		</div>	
 	</body>	
 </html>
