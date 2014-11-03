@@ -1,2 +1,2 @@
-# exclude database
-website/db
+# exclude database data
+website/build/*.csv
