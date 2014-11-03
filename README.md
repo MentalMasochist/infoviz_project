@@ -22,6 +22,8 @@ ToDo
 - [ ] add data to database csv python file to build section
 	- [ ] add data section to website and put rwa data there
 		- this will be good if you will continutally update the website database
+	- [ ] need to include all cleaning files
+		- sometimes there is a null field for authors that needs to be taken care of
 - [ ] build out visualizations
 	- [ ] trends
 	- [ ] subject graph
@@ -43,7 +45,6 @@ Additional Notes/Concerns
 - description and title have been cleaned
 - how to deal with text encoding for non-english text?
 - need to think how to parse author names so searches are intuitive?
-
 
 Database Schema (bold fields are primary keys)
 ----------------------------------------------
