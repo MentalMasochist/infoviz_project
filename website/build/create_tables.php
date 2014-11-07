@@ -2,12 +2,16 @@
 $dbhost = 'localhost';
 $dbuser = 'root';
 $dbpass = '';
+
+// connect to database
 $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 if(! $conn )
 {
   die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully<br />';
+
+// create papers table
 $sql = "CREATE TABLE IF NOT EXISTS arXiv_db.papers( ".
        "paper_id VARCHAR(150) NOT NULL, ".
        "title VARCHAR(100) NOT NULL, ".
@@ -20,8 +24,9 @@ if(! $retval )
 {
   die('Could not create table: ' . mysql_error());
 }
-echo "Table created successfully\n";
+echo "Papers table created successfully <br />";
 
+// create authors table
 $sql = "CREATE TABLE IF NOT EXISTS arXiv_db.authors( ".
        "paper_id VARCHAR(150) NOT NULL, ".
        "set_spec VARCHAR(40) NOT NULL, ".
@@ -32,8 +37,9 @@ if(! $retval )
 {
   die('Could not create table: ' . mysql_error());
 }
-echo "Table created successfully\n";
+echo "Authors table created successfully <br />";
 
+// create subjects table
 $sql = "CREATE TABLE IF NOT EXISTS arXiv_db.subjects( ".
        "paper_id VARCHAR(150) NOT NULL, ".
        "set_spec VARCHAR(40) NOT NULL, ".
@@ -45,6 +51,6 @@ if(! $retval )
 {
   die('Could not create table: ' . mysql_error());
 }
-echo "Table created successfully\n";
+echo "Subjects table created successfully <br />";
 mysql_close($conn);
 ?>
