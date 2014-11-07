@@ -7,9 +7,19 @@ Information Visualization Project
 Notes
 =====
 
+- remember that frequency count needs to be normalized over all publications that year
+	(the latter you can probably preprocess)
+
 ToDo
 ----
 
+- [ ] data preprocessing
+	- [ ] convert all dt_created into month and years 
+		- currently has day, but we will never show this
+		- show we include a field that is month, year, and just year
+			- you dont have to dont much after the query after this
+	- [ ] convert unique id into integer (the string part tells you nothing)
+	- replace '\n' with spaces
 - [ ] Convert csv data in db -- SH
 - [ ] move files into gitignored directory in website
 - [ ] build website skeleton
