@@ -1,26 +1,32 @@
 <?php
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
-$conn = mysql_connect($dbhost, $dbuser, $dbpass);
+$dbpass = 'e5ye5ye5y';
+$database = 'arXiv_db';
+
+// connect to database
+$server = mysql_connect($dbhost, $dbuser, $dbpass);
+$conn = mysql_select_db($database, $server);
+
 if(! $conn )
 {
   die('Could not connect: ' . mysql_error());
 }
-echo 'Connected successfully<br />';
+echo ' - connected successfully<br />';
 
-$sql = "LOAD DATA LOCAL INFILE 'papers.csv'
-        INTO TABLE arXiv_db.papers
-        FIELDS TERMINATED BY '\t'
-        (paper_id, title, date_of_submission, set_spec, description)
-        ";
+$sql = " LOAD DATA LOCAL INFILE 'papers_test.csv'                       ".
+       "     INTO TABLE papers                                     ".
+       "     FIELDS TERMINATED BY '\t'                             ".
+       "     LINES TERMINATED BY '\n'                              ".
+       "     (paper_id, title, dt_created, set_spec, description); ";
 
-$retval = mysql_query( $sql, $conn );
+$retval = mysql_query( $sql );
+
 if(! $retval )
 {
   die('Could not load into table: ' . mysql_error());
 }
-echo "Data loaded into papers table successfully<br \>";
+echo " - papers table loaded successfully<br />";
 
-mysql_close($conn);
+mysql_close( $conn );
 ?>
