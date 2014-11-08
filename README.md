@@ -19,7 +19,10 @@ ToDo
 		- show we include a field that is month, year, and just year
 			- you dont have to dont much after the query after this
 	- [ ] convert unique id into integer (the string part tells you nothing)
-	- replace '\n' with spaces
+	- [ ] replace '\n' with spaces
+	- [ ] need to remove set spec and make paper_id by iteself to be unique
+		- these are duplicate papers
+	- [ ] get the partition function for counts for each month and year already, so you dont have to do much for the last
 - [ ] Convert csv data in db -- SH
 - [ ] move files into gitignored directory in website
 - [ ] build website skeleton
@@ -27,6 +30,16 @@ ToDo
 	- [ ] divs
 	- [ ] css
 - [ ] create php queries -- SH
+	- will need to inner join on all things such that queries taking in all constraints
+	- Query 1
+		- use for trend and wordle
+		- only query papers table
+	- Query 2
+		- use for subject graph
+		- inner join papers and subjects table
+	- Query 3
+		- use for author graph
+		- inner join papers and authors table
 - [ ] write js/html to get php queries -- RB
 - [ ] sanity check queries
 - [ ] add data to database csv python file to build section
