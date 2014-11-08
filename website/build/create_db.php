@@ -1,7 +1,7 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
+$servername = 'localhost';
+$username = 'root';
+$password = 'e5ye5ye5y';
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password);
@@ -12,9 +12,9 @@ if (!$conn) {
 }
 
 // Create database
-$sql = "CREATE DATABASE arXiv_db";
+$sql = "CREATE DATABASE IF NOT EXISTS arXiv_db;";
 if (mysqli_query($conn, $sql)) {
-    echo "Database created successfully";
+    echo " - database created successfully";
 } else {
     echo "Error creating database: " . mysqli_error($conn);
 }
