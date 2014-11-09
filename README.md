@@ -9,6 +9,7 @@ Notes
 
 - remember that frequency count needs to be normalized over all publications that year
 	(the latter you can probably preprocess)
+- an idea for any sujects that we can find is to just have a NULL subject that is attached to every paper
 
 ToDo
 ----
@@ -85,5 +86,7 @@ Database Schema (bold fields are primary keys)
 	- __paper_id__ [VARCHAR(50)]
 	- __set_spec__ [VARCHAR(50)]
 	- __subject_name__ [VARCHAR(50)]
+
+
 
 
