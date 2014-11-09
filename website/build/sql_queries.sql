@@ -94,7 +94,7 @@ LOAD DATA LOCAL INFILE 'proper_subjects.csv'
 -- | paper_id    | varchar(100) | NO   | PRI | NULL    |       |
 -- | title       | text         | NO   |     | NULL    |       |
 -- | dt_created  | date         | NO   |     | NULL    |       |
--- | set_spec    | varchar(100) | NO   | PRI | NULL    |       |
+-- | set_spec    | varchar(100) | NO   |     | NULL    |       |
 -- | description | text         | NO   |     | NULL    |       |
 -- +-------------+--------------+------+-----+---------+-------+
 
@@ -104,7 +104,7 @@ LOAD DATA LOCAL INFILE 'proper_subjects.csv'
 -- | Field       | Type         | Null | Key | Default | Extra |
 -- +-------------+--------------+------+-----+---------+-------+
 -- | paper_id    | varchar(100) | NO   | PRI | NULL    |       |
--- | set_spec    | varchar(100) | NO   | PRI | NULL    |       |
+-- | set_spec    | varchar(100) | NO   |     | NULL    |       |
 -- | author_name | varchar(100) | NO   | PRI | NULL    |       |
 -- +-------------+--------------+------+-----+---------+-------+
 -- 3 rows in set (0.00 sec)
@@ -115,7 +115,7 @@ LOAD DATA LOCAL INFILE 'proper_subjects.csv'
 -- | Field        | Type         | Null | Key | Default | Extra |
 -- +--------------+--------------+------+-----+---------+-------+
 -- | paper_id     | varchar(100) | NO   | PRI | NULL    |       |
--- | set_spec     | varchar(100) | NO   | PRI | NULL    |       |
+-- | set_spec     | varchar(100) | NO   |     | NULL    |       |
 -- | subject_name | varchar(100) | NO   | PRI | NULL    |       |
 -- +--------------+--------------+------+-----+---------+-------+
 

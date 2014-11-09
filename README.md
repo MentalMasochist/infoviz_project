@@ -13,6 +13,13 @@ Notes
 
 ToDo
 ----
+- [x] remove set_spec as primary key
+- [ ] add data to database csv python file to build section
+	- [ ] add data section to website and put raw data there
+		- this will be good if you will continutally update the website database
+	- [ ] need to include all cleaning files
+		- sometimes there is a null field for authors that needs to be taken care of
+- [ ] find all msc codes
 - [ ] data preprocessing
 	- [ ] convert all dt_created into month and years 
 		- currently has day, but we will never show this
@@ -42,11 +49,6 @@ ToDo
 		- inner join papers and authors table
 - [ ] write js/html to get php queries -- RB
 - [ ] sanity check queries
-- [ ] add data to database csv python file to build section
-	- [ ] add data section to website and put rwa data there
-		- this will be good if you will continutally update the website database
-	- [ ] need to include all cleaning files
-		- sometimes there is a null field for authors that needs to be taken care of
 - [ ] build out visualizations
 	- [ ] trends
 	- [ ] subject graph
