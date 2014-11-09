@@ -1,6 +1,3 @@
-<html>
-<body>
-
 <?php
 
 function f_mysql_query($query) {
@@ -73,7 +70,6 @@ if (empty($form_keywords)) {
 // create full queries
 //////////////////////
 
-
 $query_papers = " SELECT paper_id, dt_created FROM papers                  ".
                 "     WHERE MATCH (title, description)                     ".
                 "     AGAINST ('".trim($query_papers)."' IN BOOLEAN MODE); ";
@@ -82,6 +78,3 @@ $query_papers = " SELECT paper_id, dt_created FROM papers                  ".
 f_mysql_query($query_papers);
 
 ?>
-
-</body>
-</html>
