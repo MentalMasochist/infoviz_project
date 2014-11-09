@@ -221,13 +221,64 @@ SELECT s.paper_id
     HAVING count(s.paper_id) = 1
 );
 
-
+CREATE TEMPORARY TABLE active_papers AS (
 SELECT tp.paper_id
     FROM temp_papers tp
     INNER JOIN temp_authors ta 
     ON ta.paper_id = tp.paper_id
     INNER JOIN temp_subjects ts 
     ON ts.paper_id = tp.paper_id;
+);
+
+
+SELECT count(paper_id) AS count_paper, 
+       year(dt_created) AS yr, 
+       month(dt_created) AS mn 
+       FROM papers 
+       WHERE paper_id IN(
+            SELECT paper_id 
+                 FROM active_papers 
+        ) 
+        GROUP BY year(dt_created), month(dt_created);
+
+
+
+
+$query = "SELECT count(paper_id) AS count_paper,                ".
+"       year(dt_created) AS yr,                        ".
+"       month(dt_created) AS mn                        ".
+"       FROM papers p                                    ".
+"       INNER JOIN active_papers ap".
+"        ON p.paper_id = ap.paper_id".
+"       GROUP BY year(dt_created), month(dt_created); ";
+
+
+       WHERE paper_id IN(                             
+            SELECT paper_id                           
+                 FROM active_papers                   
+        )                                             
+        GROUP BY year(dt_created), month(dt_created); 
+
+
+$query = "  select count_paper/count_tot_paper, A.yr, A.mn from                                          ".                                          
+        "  (select count(paper_id) as count_paper, year(dt_created) as yr, month(dt_created) as mn      ".
+        "    from papers                                                                                ".
+        "    where paper_id in(                                                                         ".
+        "    select paper_id                                                                            ".
+        "    from active_papers)                                                                        ".
+        "    group by year(dt_created), month(dt_created)) A join (                                     ".
+        "    select count(paper_id) as count_tot_paper, year(dt_created) as yr, month(dt_created) as mn ".
+        "    from papers                                                                                ".
+        "    group by year(dt_created), month(dt_created)) B                                            ".
+        "  where A.yr = B.yr and A.mn = B.mn;                                                           ";
+
+
+$query = " select count(subject_name) as count_sub, subject_name ".
+" from subjects                                         ".
+" inner join active_papers                              ".
+" on active_papers.paper_id = subjects.paper_id         ".
+" group by subject_name                                 ".
+" order by count_sub desc;                              ";
 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------

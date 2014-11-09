@@ -144,15 +144,34 @@ echo "<br/><br/>";
 echo $table_subjects;
 echo "<br/><br/>";
 
-$query = " SELECT tp.paper_id                        ".
+$query = "CREATE TEMPORARY TABLE active_papers AS (  ".
+         " SELECT tp.paper_id                        ".
          "     FROM ".$table_papers." tp             ".
          "     INNER JOIN ".$table_authors." ta      ".
          "     ON ta.paper_id = tp.paper_id          ".
          "     INNER JOIN ".$table_subjects." ts     ".
-         "     ON ts.paper_id = tp.paper_id;         ";
+         "     ON ts.paper_id = tp.paper_id          ".
+         " );                                        ";
 
 echo $query;
 echo "<br /><br />";
+mysql_query($query);	
+// $query = "SELECT count(ap.paper_id) AS count_paper,                ".
+// "       year(dt_created) AS yr,                        ".
+// "       month(dt_created) AS mn                        ".
+// "       FROM papers p                                    ".
+// "       INNER JOIN active_papers ap".
+// "        ON p.paper_id = ap.paper_id".
+// "       GROUP BY year(dt_created), month(dt_created); ";
+
+$query = " select count(subject_name) as count_sub, subject_name ".
+" from subjects                                         ".
+" inner join active_papers                              ".
+" on active_papers.paper_id = subjects.paper_id         ".
+" group by subject_name                                 ".
+" order by count_sub desc;                              ";
+
+
 f_mysql_query($query);	
 
 mysql_close($conn);
