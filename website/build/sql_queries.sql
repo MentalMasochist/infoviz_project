@@ -153,27 +153,11 @@ SELECT COUNT(DISTINCT paper_id)
 -- - then inner join them to return the proper relation
 
 
-
--- using inner joins
-
-SELECT p.set_spec, a.author_name, p.dt_created
-    FROM papers p
-    INNER JOIN authors a
-        ON p.paper_id = a.paper_id
-    INNER JOIN subjects s
-        ON p.paper_id = s.paper_id
-    WHERE p.dt_created = "2013-01-01" 
-    OR p.dt_created = "2014-01-01"
-    LIMIT 10;
-
-
--- FULL TEXT SEARCH?
-
-
 -- Query 1
-SELECT dt_created, description FROM papers
+SELECT dt_created, count(dt_created) FROM papers
     WHERE MATCH (title, description) 
-    AGAINST ('+tomorrow' IN BOOLEAN MODE);
+    AGAINST ('+tomorrow' IN BOOLEAN MODE)
+    GROUP BY dt_created;
 
 -- Query 2
     SELECT paper_id FROM authors
@@ -182,6 +166,11 @@ SELECT dt_created, description FROM papers
     SELECT COUNT(*), paper_id, set_spec FROM authors
         WHERE MATCH (author_name) AGAINST ('roughgarden' IN BOOLEAN MODE)
         GROUP BY paper_id;
+
+--------------------- 
+-- inner join methods
+---------------------
+-- doesn't deal with multiple authors and subjects well (will give the union of )
 
 
 SELECT s.paper_id, p.paper_id, s.paper_id
@@ -192,43 +181,6 @@ SELECT s.paper_id, p.paper_id, s.paper_id
         ON p.paper_id = s.paper_id
     WHERE MATCH (a.author_name) AGAINST ('trimm' IN BOOLEAN MODE);
 
-
-
-
-SELECT a.paper_id, p.paper_id
-    FROM papers p
-    INNER JOIN authors a
-        ON p.paper_id = a.paper_id
-    WHERE MATCH (a.author_name) AGAINST ('trimm' IN BOOLEAN MODE);
-
-
-
-
-    WHERE MATCH (p.title, p.description) AGAINST ('+algorithm' IN BOOLEAN MODE)
-    AND MATCH (s.subject_name) AGAINST ('*theory*' IN BOOLEAN MODE);
-
-
-
--- recursive
-SELECT 
-SELECT * as (p_paper_id, p_title, p_dt_created, p_set_spec, p_description, a_paper_id, a_set_spec, a_author_name)
-    FROM (
-        SELECT * FROM papers
-            WHERE MATCH (title, description) 
-            AGAINST ('+algorithm' IN BOOLEAN MODE)
-    ) p
-    INNER JOIN authors a
-        ON p.paper_id = a.paper_id
-    WHERE MATCH (a.author_name) 
-    AGAINST ('roughgarden' IN BOOLEAN MODE)
-    LIMIT 1;
-
--- 41994
-
-(p_paper_id, p_title, p_dt_created, p_set_spec, p_description, a_paper_id, a_set_spec, a_author_name)
-
-
-
 SELECT s.subject_name
     FROM papers p
     INNER JOIN authors a
@@ -236,28 +188,12 @@ SELECT s.subject_name
     INNER JOIN subjects s
         ON p.paper_id = s.paper_id
     WHERE MATCH (p.title, p.description) AGAINST ('+algorithm' IN BOOLEAN MODE)
-    AND MATCH (a.author_name) AGAINST ('roughgarden' IN BOOLEAN MODE);
+    AND MATCH (a.author_name) AGAINST ('roughgarden' IN BOOLEAN MODE)
     AND MATCH (s.subject_name) AGAINST ('*theory*' IN BOOLEAN MODE);
 
-
-
-
-SELECT DISTINCT s.subject_name
-    INTO OUTFILE "test2.txt"
-    FROM papers p
-    INNER JOIN authors a
-        ON p.paper_id = a.paper_id
-    INNER JOIN subjects s
-        ON p.paper_id = s.paper_id
-    WHERE MATCH (s.subject_name) AGAINST ('*energy*' IN BOOLEAN MODE);
-    
-
-    AND MATCH (p.title, p.description) AGAINST ('+algorithm' IN BOOLEAN MODE)
-    AND MATCH (a.author_name) AGAINST ('roughgarden' IN BOOLEAN MODE);
-
-
--- three temp tables
---------------------
+---------------------------
+-- three temp tables method 
+---------------------------
 
 -- papers
 DROP TABLE IF EXISTS temp_papers;
@@ -295,10 +231,46 @@ SELECT tp.paper_id
     INNER JOIN temp_subjects ts 
     ON ts.paper_id = tp.paper_id;
 
-temp_subjects
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
 
-
-SELECT subject_name
-    FROM subjects
-    WHERE paper_id = "oai:arXiv.org:0804.2097";
+" -- papers                                                                                  ".
+" DROP TABLE IF EXISTS temp_papers;                                                          ".
+" CREATE TEMPORARY TABLE temp_papers AS (                                                    ".
+"     SELECT p.paper_id                                                                      ".
+"         FROM papers p                                                                      ".
+"         WHERE MATCH (p.title, p.description) AGAINST (".$query_keywords." IN BOOLEAN MODE) ".
+" );                                                                                         ".
+"                                                                                            ".
+" -- authors                                                                                 ".
+" DROP TABLE IF EXISTS temp_authors;                                                         ".
+" CREATE TEMPORARY TABLE temp_authors AS (                                                   ".
+" SELECT a.paper_id                                                                          ".
+"     FROM authors a                                                                         ".
+"     WHERE MATCH (a.author_name) AGAINST (".$query_authors." IN BOOLEAN MODE)               ".
+"     GROUP BY a.paper_id                                                                    ".
+"     HAVING count(a.paper_id) = 1                                                           ".
+" );                                                                                         ".
+"                                                                                            ".
+" -- subjects                                                                                ".
+" DROP TABLE IF EXISTS temp_subjects;                                                        ".
+" CREATE TEMPORARY TABLE temp_subjects AS (                                                  ".
+" SELECT s.paper_id                                                                          ".
+"     FROM subjects s                                                                        ".
+"     WHERE MATCH (s.subject_name) AGAINST (".$query_subjects." IN BOOLEAN MODE)             ".
+"     GROUP BY s.paper_id                                                                    ".
+"     HAVING count(s.paper_id) = 1                                                           ".
+" );                                                                                         ".
+"                                                                                            ".
+"                                                                                            ".
+" SELECT tp.paper_id                                                                         ".
+"     FROM temp_papers tp                                                                    ".
+"     INNER JOIN temp_authors ta                                                             ".
+"     ON ta.paper_id = tp.paper_id                                                           ".
+"     INNER JOIN temp_subjects ts                                                            ".
+"     ON ts.paper_id = tp.paper_id;                                                          ";
 
