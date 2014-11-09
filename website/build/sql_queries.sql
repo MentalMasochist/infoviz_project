@@ -2,7 +2,6 @@
     -- when doing full text search, use boolean mode, 
     --   or it will only return at max 50% of the entire corpus
 
-
 -- log in mysql
 mysql -uroot -pe5ye5ye5y
 
@@ -24,11 +23,10 @@ CREATE TABLE IF NOT EXISTS papers (
     dt_created DATE NOT NULL,
     set_spec VARCHAR(40) NOT NULL,
     description TEXT NOT NULL,
-    PRIMARY KEY (paper_id, set_spec)
+    PRIMARY KEY (paper_id)
 );
 
 ALTER TABLE papers ENGINE = MYISAM;
-
 
 ALTER TABLE papers
     ADD FULLTEXT INDEX title_desc
@@ -49,7 +47,7 @@ CREATE TABLE IF NOT EXISTS authors (
     paper_id VARCHAR(150) NOT NULL,
     set_spec VARCHAR(40) NOT NULL,
     author_name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (paper_id, set_spec, author_name),
+    PRIMARY KEY (paper_id, author_name),
     CONSTRAINT FOREIGN KEY (paper_id) REFERENCES papers (paper_id)  
 ) ENGINE=MYISAM;
 
@@ -70,7 +68,7 @@ CREATE TABLE IF NOT EXISTS subjects (
     paper_id VARCHAR(150) NOT NULL,
     set_spec VARCHAR(40) NOT NULL,
     subject_name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (paper_id, set_spec, subject_name),
+    PRIMARY KEY (paper_id, subject_name),
     CONSTRAINT FOREIGN KEY (paper_id) REFERENCES papers (paper_id)  
 )ENGINE=MYISAM;
 
