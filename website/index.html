@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" style="heigh=100%">
+
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!--
+    If you want to try to move the viz code to separate files:
+    <script src='js/coffee.js'></script>
+    <script src='js/coffee.js'></script>
+    <script src='js/coffee.js'></script>
+    -->
   </head>	
+
 	<body style="height:100%">
 
 		<div id="header">
 			<h1>arXiv connectivity visualization</h1>
 		</div>	
   
-	<div id="viz_trend">
+	  <div id="viz_trend">
 			<h1>viz_trend</h1>	
 		</div>
 
@@ -78,7 +87,8 @@
         // callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             // log a message to the console
-            console.log("Hooray, it worked!");
+            console.log("php query successfull");
+            console.log(response);
             main_viz(response);
         });
 
@@ -100,35 +110,99 @@
         // prevent default posting of form
         event.preventDefault();
 
+        });
       });
-    });
   
-  function main_viz(data) {
-    console.log(data[0].dt_created);
-    trend_viz(data);
-    subject_network_viz(data);
-    author_network_viz(data);
-    word_cloud_viz(data);
-    return 0;
-  };
+    function main_viz(data) {
+      trend_viz(data);
+      subject_network_viz(data);
+      author_network_viz(data);
+      word_cloud_viz(data);
+      extra_viz(data);
+    };
 
-  function trend_viz(data) {
-    return 0;
-  };
+    function trend_viz(data) {
 
-  function subject_network_viz(data) {
-    return 0;
-  };
+      var sampleSVG = d3.select("#viz_trend")
+          .append("svg")
+          .attr("width", 100)
+          .attr("height", 100);    
 
-  function author_network_viz(data) {
-    return 0;
-  };
+      sampleSVG.append("circle")
+          .style("stroke", "gray")
+          .style("fill", "white")
+          .attr("r", 40)
+          .attr("cx", 50)
+          .attr("cy", 50)
+          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    };
 
-  function word_cloud_viz(data) {
-    return 0;
-  };
+    function subject_network_viz(data) {
+      var sampleSVG = d3.select("#viz_graph_subject")
+          .append("svg")
+          .attr("width", 100)
+          .attr("height", 100);    
+
+      sampleSVG.append("circle")
+          .style("stroke", "gray")
+          .style("fill", "white")
+          .attr("r", 40)
+          .attr("cx", 50)
+          .attr("cy", 50)
+          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    };
+
+    function author_network_viz(data) {
+      var sampleSVG = d3.select("#viz_graph_author")
+          .append("svg")
+          .attr("width", 100)
+          .attr("height", 100);    
+
+      sampleSVG.append("circle")
+          .style("stroke", "gray")
+          .style("fill", "white")
+          .attr("r", 40)
+          .attr("cx", 50)
+          .attr("cy", 50)
+          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    };
+
+    function word_cloud_viz(data) {
+      var sampleSVG = d3.select("#viz_word_cloud")
+          .append("svg")
+          .attr("width", "100%")
+          .attr("height", "100%");    
+
+      sampleSVG.append("circle")
+          .style("stroke", "gray")
+          .style("fill", "white")
+          .attr("r", 40)
+          .attr("cx", 50)
+          .attr("cy", 50)
+          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    };
+
+    function extra_viz(data) {
+      var sampleSVG = d3.select("#extra")
+          .append("svg")
+          .attr("width", 100)
+          .attr("height", 100);    
+
+      sampleSVG.append("circle")
+          .style("stroke", "gray")
+          .style("fill", "white")
+          .attr("r", 40)
+          .attr("cx", 50)
+          .attr("cy", 50)
+          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    };
 
   </script>
 
-	</body>	
+  </body> 
 </html>
