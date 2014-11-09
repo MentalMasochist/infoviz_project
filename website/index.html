@@ -1,206 +1,207 @@
 <!DOCTYPE html>
 <html lang="en" style="heigh=100%">
 
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="css/main.css">
-		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <!--
+    <script src='js/.js'></script>
     If you want to try to move the viz code to separate files:
     <script src='js/coffee.js'></script>
     <script src='js/coffee.js'></script>
     <script src='js/coffee.js'></script>
     -->
-  </head>	
+  </head> 
 
-	<body style="height:100%">
+  <body style="height:100%">
 
-		<div id="header">
-			<h1>arXiv connectivity visualization</h1>
-		</div>	
+    <div id="header">
+      <h1>arXiv connectivity visualization</h1>
+    </div>  
   
-	  <div id="viz_trend">
-			<h1>viz_trend</h1>	
-		</div>
+    <div id="viz_trend">
+      <h1>viz_trend</h1>  
+    </div>
 
-		<div id="menu">
-      <!-- <form id="form_menu" method="post" action="query.php"> -->
+    <div id="menu">
+      <form id="form_menu" method="post" action="query.php">
       <!-- <form id="form_menu" name="form_menu" method="post"> -->
       <form id="form_menu" >
-					Subjects: <input type="text" name="subjects" style="width:90%"> <br>
-					Authors: <input type="text" name="authors" style="width:90%"> <br>
-					Keywords: <input type="text" name="keywords" style="width:90%"> <br>
-					<input type="submit" value="search_arXiv" align="left">	<br>
-			</form>
-		</div>	
+          Subjects: <input type="text" name="subjects" style="width:90%"> <br>
+          Authors: <input type="text" name="authors" style="width:90%"> <br>
+          Keywords: <input type="text" name="keywords" style="width:90%"> <br>
+          <input type="submit" value="search_arXiv" align="left"> <br>
+      </form>
+    </div>  
 
-		<div id="viz_graph_subject">
-			<h1>viz_graph_subject</h1>	
-		</div>	
+    <div id="viz_graph_subject">
+      <h1>viz_graph_subject</h1>  
+    </div>  
 
-		<div id="viz_graph_author">
-			<h1>viz_graph_author</h1>	
-		</div>
+    <div id="viz_graph_author">
+      <h1>viz_graph_author</h1> 
+    </div>
 
-		<div id="viz_word_cloud">
-			<h1>viz_word_cloud</h1>	
-		</div>	
+    <div id="viz_word_cloud">
+      <h1>viz_word_cloud</h1> 
+    </div>  
 
-		<div id="extra">
-			<h1>extra</h1>
-		</div>	
+    <div id="extra">
+      <h1>extra</h1>
+    </div>  
 
-  <script type="text/javascript">
-      $(document).ready( function() {
-      // variable to hold request
-      var request;
+  // <script type="text/javascript">
+  //     $(document).ready( function() {
+  //     // variable to hold request
+  //     var request;
       
-      $("#form_menu").submit(function(event){
+  //     $("#form_menu").submit(function(event){
 
 
-        if (request) {
-          request.abort();
-        }
+  //       if (request) {
+  //         request.abort();
+  //       }
 
-        var $form = $(this);
+  //       var $form = $(this);
     
-        // let's select and cache all the fields
-        var $inputs = $form.find("input, select, button, textarea");
+  //       // let's select and cache all the fields
+  //       var $inputs = $form.find("input, select, button, textarea");
 
-        var serializedData = $form.serialize();
-        console.log(serializedData);
+  //       var serializedData = $form.serialize();
+  //       console.log(serializedData);
 
 
-        $inputs.prop("disabled", true);
+  //       $inputs.prop("disabled", true);
 
-        // fire off the request to /form.php
-        request = $.ajax({
-            url: "query.php",
-            type: "post",
-            data: serializedData,
-            dataType: "JSON"
-        });
+  //       // fire off the request to /form.php
+  //       request = $.ajax({
+  //           url: "query.php",
+  //           type: "post",
+  //           data: serializedData,
+  //           dataType: "JSON"
+  //       });
 
-        var ret;
-        // callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){
-            // log a message to the console
-            console.log("php query successfull");
-            console.log(response);
-            main_viz(response);
-        });
+  //       var ret;
+  //       // callback handler that will be called on success
+  //       request.done(function (response, textStatus, jqXHR){
+  //           // log a message to the console
+  //           console.log("php query successfull");
+  //           console.log(response);
+  //           main_viz(response);
+  //       });
 
-        // callback handler that will be called on failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
-            // log the error to the console
-            console.error(
-                "The following error occured: "+
-                textStatus, errorThrown
-            );
-        });
+  //       // callback handler that will be called on failure
+  //       request.fail(function (jqXHR, textStatus, errorThrown){
+  //           // log the error to the console
+  //           console.error(
+  //               "The following error occured: "+
+  //               textStatus, errorThrown
+  //           );
+  //       });
 
-        // callback handler that will be called regardless
-        // if the request failed or succeeded
-        request.always(function () {
-            // reenable the inputs
-            $inputs.prop("disabled", false);
-        });
-        // prevent default posting of form
-        event.preventDefault();
+  //       // callback handler that will be called regardless
+  //       // if the request failed or succeeded
+  //       request.always(function () {
+  //           // reenable the inputs
+  //           $inputs.prop("disabled", false);
+  //       });
+  //       // prevent default posting of form
+  //       event.preventDefault();
 
-        });
-      });
+  //       });
+  //     });
   
-    function main_viz(data) {
-      trend_viz(data);
-      subject_network_viz(data);
-      author_network_viz(data);
-      word_cloud_viz(data);
-      extra_viz(data);
-    };
+    // function main_viz(data) {
+    //   trend_viz(data);
+    //   subject_network_viz(data);
+    //   author_network_viz(data);
+    //   word_cloud_viz(data);
+    //   extra_viz(data);
+    // };
 
-    function trend_viz(data) {
+    // function trend_viz(data) {
 
-      var sampleSVG = d3.select("#viz_trend")
-          .append("svg")
-          .attr("width", 100)
-          .attr("height", 100);    
+    //   var sampleSVG = d3.select("#viz_trend")
+    //       .append("svg")
+    //       .attr("width", 100)
+    //       .attr("height", 100);    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
-    function subject_network_viz(data) {
-      var sampleSVG = d3.select("#viz_graph_subject")
-          .append("svg")
-          .attr("width", 100)
-          .attr("height", 100);    
+    // function subject_network_viz(data) {
+    //   var sampleSVG = d3.select("#viz_graph_subject")
+    //       .append("svg")
+    //       .attr("width", 100)
+    //       .attr("height", 100);    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
-    function author_network_viz(data) {
-      var sampleSVG = d3.select("#viz_graph_author")
-          .append("svg")
-          .attr("width", 100)
-          .attr("height", 100);    
+    // function author_network_viz(data) {
+    //   var sampleSVG = d3.select("#viz_graph_author")
+    //       .append("svg")
+    //       .attr("width", 100)
+    //       .attr("height", 100);    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
-    function word_cloud_viz(data) {
-      var sampleSVG = d3.select("#viz_word_cloud")
-          .append("svg")
-          .attr("width", "100%")
-          .attr("height", "100%");    
+    // function word_cloud_viz(data) {
+    //   var sampleSVG = d3.select("#viz_word_cloud")
+    //       .append("svg")
+    //       .attr("width", "100%")
+    //       .attr("height", "100%");    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
-    function extra_viz(data) {
-      var sampleSVG = d3.select("#extra")
-          .append("svg")
-          .attr("width", 100)
-          .attr("height", 100);    
+    // function extra_viz(data) {
+    //   var sampleSVG = d3.select("#extra")
+    //       .append("svg")
+    //       .attr("width", 100)
+    //       .attr("height", 100);    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
   </script>
 
