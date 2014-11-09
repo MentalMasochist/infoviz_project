@@ -12,7 +12,6 @@ Notes
 
 ToDo
 ----
-
 - [ ] data preprocessing
 	- [ ] convert all dt_created into month and years 
 		- currently has day, but we will never show this
