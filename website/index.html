@@ -3,26 +3,27 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
-	</head>	
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  </head>	
 	<body style="height:100%">
-	
+
 		<div id="header">
 			<h1>arXiv connectivity visualization</h1>
 		</div>	
-
-		<div id="viz_trend">
+  
+	<div id="viz_trend">
 			<h1>viz_trend</h1>	
 		</div>
 
 		<div id="menu">
-			<form method="post" action="query.php">
-			<!-- <form method="post" > -->
-				<div align="right"> 
+      <!-- <form id="form_menu" method="post" action="query.php"> -->
+      <!-- <form id="form_menu" name="form_menu" method="post"> -->
+      <form id="form_menu" >
 					Subjects: <input type="text" name="subjects" style="width:90%"> <br>
 					Authors: <input type="text" name="authors" style="width:90%"> <br>
 					Keywords: <input type="text" name="keywords" style="width:90%"> <br>
-					<input type="submit" value="search arXiv" align="left">	<br>
-				</div>
+					<input type="submit" value="search_arXiv" align="left">	<br>
 			</form>
 		</div>	
 
@@ -32,7 +33,7 @@
 
 		<div id="viz_graph_author">
 			<h1>viz_graph_author</h1>	
-		</div>	
+		</div>
 
 		<div id="viz_word_cloud">
 			<h1>viz_word_cloud</h1>	
@@ -41,6 +42,80 @@
 		<div id="extra">
 			<h1>extra</h1>
 		</div>	
+
+  <script type="text/javascript">
+    // $(document).ready(function() {
+      // submit handler
+
+      // variable to hold request
+      var request;
+      
+      $("#form_menu").submit(function(event){
+
+        if (request) {
+          request.abort();
+        }
+
+        var $form = $(this);
+    
+        // let's select and cache all the fields
+        var $inputs = $form.find("input, select, button, textarea");
+
+        var serializedData = $form.serialize();
+        console.log(serializedData);
+
+        $inputs.prop("disabled", true);
+
+        // fire off the request to /form.php
+        request = $.ajax({
+            url: "query.php",
+            type: "post",
+            data: serializedData
+        });
+
+        // callback handler that will be called on success
+        request.done(function (response, textStatus, jqXHR){
+            // log a message to the console
+            console.log("Hooray, it worked!");
+            console.log(response);
+        });
+
+        // callback handler that will be called on failure
+        request.fail(function (jqXHR, textStatus, errorThrown){
+            // log the error to the console
+            console.error(
+                "The following error occured: "+
+                textStatus, errorThrown
+            );
+        });
+
+        // callback handler that will be called regardless
+        // if the request failed or succeeded
+        request.always(function () {
+            // reenable the inputs
+            $inputs.prop("disabled", false);
+        });
+
+        // prevent default posting of form
+        event.preventDefault();
+    });
+
+
+        // // get input data
+        // var d = $("#form_menu").serialize();
+        // console.log(d);
+
+        // // send the data using post
+        // $.post("query.php", d, function(resp) {
+        //   if (resp.type == 'error') {
+        //     alert('failure!');
+        //   } else {
+        //     alert('success');
+        //   } 
+        // });
+      // });
+    // });
+  </script>
 
 	</body>	
 </html>
