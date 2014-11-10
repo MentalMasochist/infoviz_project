@@ -13,46 +13,41 @@ Notes
 
 ToDo
 ----
+- RB
+	- [ ] Finish data build
+	- [ ] Move SH queries to PHP
+	- [ ] Get php to reurn multiple Query results
+	- [ ] Send specific data to specific functions
+	- [ ] Line Chart
+- SH
+	- [ ] finishing up on queries
+	- [ ] remove \r characters from subject names
+	- [ ] MSC mapping
+	- [ ] Insert space in subject names if needed
+	- [ ] normalization
+    - [ ] bubble chart
+
+
 - [ ] data preprocessing
-	- [ ] convert all dt_created into month and years 
-		- currently has day, but we will never show this
-		- show we include a field that is month, year, and just year
-			- you dont have to dont much after the query after this
-	- [ ] convert unique id into integer (the string part tells you nothing)
-	- [ ] replace '\n' with spaces
-	- [ ] need to remove set spec and make paper_id by iteself to be unique
+	- [x] replace '\n' with spaces
+	- [x] need to remove set spec and make paper_id by iteself to be unique
 		- these are duplicate papers
-	- [ ] get the partition function for counts for each month and year already, so you dont have to do much for the last
-- [ ] Convert csv data in db -- SH
+	- [not necc] get the partition function for counts for each month and year already, so you dont have to do much for the last
+		- find some way to do normalization fast for paper counts
+	- [not necc] convert unique id into integer (the string part tells you nothing)
 - [ ] move files into gitignored directory in website
-- [ ] build website skeleton
-	- [ ] forms
-	- [ ] divs
-	- [ ] css
-- [ ] create php queries -- SH
-	- will need to inner join on all things such that queries taking in all constraints
-	- Query 1
-		- use for trend and wordle
-		- only query papers table
-	- Query 2
-		- use for subject graph
-		- inner join papers and subjects table
-	- Query 3
-		- use for author graph
-		- inner join papers and authors table
-- [ ] write js/html to get php queries -- RB
 - [ ] sanity check queries
-- [ ] add data to database csv python file to build section
-	- [ ] add data section to website and put rwa data there
-		- this will be good if you will continutally update the website database
-	- [ ] need to include all cleaning files
-		- sometimes there is a null field for authors that needs to be taken care of
 - [ ] build out visualizations
-	- [ ] trends
+	- [...] trends
 	- [ ] subject graph
 	- [ ] author graph
-	- [ ] word cloud
-	- [ ] extra
+	- [not necc] word cloud
+	- [not necc] extra
+- [x] build website skeleton
+	- [x] forms
+	- [x] divs
+	- [x] css
+- [x] Convert csv data in db -- SH
 
 Queries
 -------
