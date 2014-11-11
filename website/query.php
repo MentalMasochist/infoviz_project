@@ -2,6 +2,8 @@
 <body>
 <?php
 
+$debug = False;
+
 function f_mysql_query($query) {
 
 	$retval = mysql_query( $query );
@@ -45,8 +47,10 @@ $counter_authors = 0;
 if (empty($form_subjects)) {
 	$active_subjects = FALSE;
 	$table_subjects = "subjects"; 
-	echo "no inputs";
-	echo "<br />";
+	if ($debug) {
+		echo "no inputs";
+		echo "<br />";
+	}
 } else {
 	$active_subjects = TRUE;
 	$table_subjects = "temp_subjects";
@@ -63,22 +67,30 @@ if (empty($form_subjects)) {
 			 "     GROUP BY s.paper_id                                                                ".
 			 "     HAVING count(s.paper_id) = ".$counter_subjects."                                   ".
 			 " );                                                                                     ";
-	echo $query;
-	echo "<br /><br />";
+	if ($debug) {
+		echo $query;
+		echo "<br /><br />";
+	}
 
 	// creat temporary table
 	if(! mysql_query($query) ) { die('Could not load into table: ' . mysql_error()); }
-	echo "temp table created<br />";
+	if ($debug) if ($debug){
+		echo "temp table created<br />";
+	}
 	$ret = f_mysql_query("SELECT count(paper_id) FROM temp_subjects;");	
-	echo $ret;
-	echo "<br /><br />";
+	if ($debug) {
+		echo $ret;
+		echo "<br /><br />";
+	}
 }
 
 if (empty($form_authors)) {
 	$active_authors = FALSE;
 	$table_authors = "authors";
-	echo "no inputs";
-	echo "<br />";
+	if ($debug) {
+		echo "no inputs";
+		echo "<br />";
+	}
 } else {
 	$active_authors = TRUE;
 	$table_authors = "temp_authors";
@@ -94,23 +106,31 @@ if (empty($form_authors)) {
              "     GROUP BY a.paper_id                                                      ".
              "     HAVING count(a.paper_id) = ".$counter_authors."                          ".
              " );                                                                           ";
-	echo $query;
-	echo "<br /><br />";
+	if ($debug) {
+		echo $query;
+		echo "<br /><br />";
+	}
 
 	// creat temporary table
 	if(! mysql_query($query) ) { die('Could not load into table: ' . mysql_error()); }
-	echo "temp table created<br />";
+	if ($debug){
+		echo "temp table created<br />";
+	}
 	$ret = f_mysql_query("SELECT count(paper_id) FROM temp_authors;");	
-	echo $ret;
-	echo "<br /><br />";
+	if ($debug) {
+		echo $ret;
+		echo "<br /><br />";
+	}
 }
 
 
 if (empty($form_papers)) {
 	$active_papers = FALSE;
 	$table_papers = "papers";
-	echo "no inputs";
-	echo "<br />";
+	if ($debug) {
+		echo "no inputs";
+		echo "<br />";
+	}
 } else {
 	$active_papers = TRUE;
 	$table_papers = "temp_papers";
@@ -123,25 +143,33 @@ if (empty($form_papers)) {
 			 "         FROM papers p                                                                      ".
 			 "         WHERE MATCH (p.title, p.description) AGAINST ('".trim($query_papers)."' IN BOOLEAN MODE) ".
 			 " );                                                                                         ";
-	echo $query;
-	echo "<br /><br />";
+	if ($debug) {
+		echo $query;
+		echo "<br /><br />";
+	}
 
 	// creat temporary table
 	if(! mysql_query($query) ) { die('Could not load into table: ' . mysql_error()); }
-	echo "temp table created<br />";
+	if ($debug) {
+		echo "temp table created<br />";
+	}
 	$ret = f_mysql_query("SELECT count(paper_id) FROM temp_papers;");	
+	if ($debug) {
 	echo $ret;
 	echo "<br /><br />";
+}
 }
 
 // inner join temp tables
 
-echo $table_papers;
-echo "<br/><br/>";
-echo $table_authors;
-echo "<br/><br/>";
-echo $table_subjects;
-echo "<br/><br/>";
+if ($debug) {
+	echo $table_papers;
+	echo "<br/><br/>";
+	echo $table_authors;
+	echo "<br/><br/>";
+	echo $table_subjects;
+	echo "<br/><br/>";
+}
 
 $query = "CREATE TEMPORARY TABLE active_papers AS (  ".
          " SELECT DISTINCT tp.paper_id               ".
@@ -152,10 +180,14 @@ $query = "CREATE TEMPORARY TABLE active_papers AS (  ".
          "     ON ts.paper_id = tp.paper_id          ".
          " );                                        ";
 
-echo $query;
-echo "<br /><br />";
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
 if(! mysql_query($query) ) { die('Could not load into table: ' . mysql_error()); }
-echo "<br /><br />";
+if ($debug) {
+	echo "<br /><br />";
+}
 f_mysql_query("SELECT * FROM active_papers;");
 
 
@@ -176,8 +208,10 @@ $query = " SELECT count_paper/count_tot_paper , selected.yr, selected.mn        
          "     ON selected.yr = total.yr AND selected.mn = total.mn;                                          ";
 
 $viz_ret_1 = f_mysql_query($query);
-echo $viz_ret_1;
-echo "<br /><br />";
+if ($debug) {
+	echo $viz_ret_1;
+	echo "<br /><br />";
+}
 
 $query = " SELECT count(subject_name) AS count_sub, subject_name ".
          "     FROM subjects s                                   ".
@@ -187,8 +221,10 @@ $query = " SELECT count(subject_name) AS count_sub, subject_name ".
          "     ORDER BY count_sub DESC;                          ";
 
 $viz_ret_2 = f_mysql_query($query);
-echo $viz_ret_2;
-echo "<br /><br />";
+if ($debug) {
+	echo $viz_ret_2;
+	echo "<br /><br />";
+}
 
 $query = " SELECT a1.author_name AS author_1, a2.author_name AS author_2             ".
          "     FROM authors a1                                                       ".
@@ -198,15 +234,17 @@ $query = " SELECT a1.author_name AS author_1, a2.author_name AS author_2        
          "         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name; ";
 
 $viz_ret_3 = f_mysql_query($query);
-echo $viz_ret_3;
-echo "<br /><br />";
+if ($debug) {
+	echo $viz_ret_3;
+	echo "<br /><br />";
+}
 
 // combining everthing together
 $viz_ret_1 = json_decode($viz_ret_1, true); 
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
 
-$master_ret = array('vis1' => $viz_ret_1[0], 'vis2' => $viz_ret_2[0], 'vis3' => $viz_ret_3[0]);
+$master_ret = array('vis1' => $viz_ret_1, 'vis2' => $viz_ret_2, 'vis3' => $viz_ret_3);
 echo json_encode($master_ret);
 
 mysql_close($conn);
