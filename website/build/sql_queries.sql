@@ -183,7 +183,7 @@ DROP TABLE IF EXISTS temp_papers;
 CREATE TEMPORARY TABLE temp_papers AS (
     SELECT p.paper_id
         FROM papers p
-        WHERE MATCH (p.title, p.description) AGAINST ('spin' IN BOOLEAN MODE)
+        WHERE MATCH (p.title, p.description) AGAINST (' ' IN BOOLEAN MODE)
 );
 
 -- authors temp table
@@ -191,9 +191,9 @@ DROP TABLE IF EXISTS temp_authors;
 CREATE TEMPORARY TABLE temp_authors AS (
 SELECT a.paper_id
     FROM authors a
-    WHERE MATCH (a.author_name) AGAINST ('Chacaltana Distler Trimm' IN BOOLEAN MODE)
+    WHERE MATCH (a.author_name) AGAINST ('Trimm' IN BOOLEAN MODE)
     GROUP BY a.paper_id
-    HAVING count(a.paper_id) = 3
+    HAVING count(a.paper_id) = 1
 );
 
 -- subjects table
@@ -211,6 +211,7 @@ SELECT s.paper_id
 -- 
 
 -- combine temporary tables into an active table set
+DROP TABLE IF EXISTS active_papers;
 CREATE TEMPORARY TABLE active_papers AS (
 SELECT DISTINCT tp.paper_id
     FROM temp_papers tp
@@ -251,12 +252,13 @@ SELECT count(subject_name) AS count_sub, subject_name
 
 
 -- AUTHOR COLLOBORATION
-SELECT a1.author_name, a2.author_name 
+SELECT a1.author_name, a2.author_name   
     FROM authors a1 
     INNER JOIN active_papers ap 
         ON ap.paper_id = a1.paper_id 
     INNER JOIN authors a2
         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name;
+
 
 ------------------------------
 -- SANITY CHECKS -------------
@@ -273,6 +275,7 @@ CREATE TEMPORARY TABLE temp_papers AS (
         FROM papers p
         WHERE MATCH (p.title, p.description) AGAINST ('Seiberg-Witten' IN BOOLEAN MODE)
 );
+
 
 -- authors temp table
 DROP TABLE IF EXISTS temp_authors;
