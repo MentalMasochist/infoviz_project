@@ -212,7 +212,7 @@ SELECT s.paper_id
 
 -- combine temporary tables into an active table set
 CREATE TEMPORARY TABLE active_papers AS (
-SELECT tp.paper_id
+SELECT DISTINCT tp.paper_id
     FROM temp_papers tp
     INNER JOIN temp_authors ta 
     ON ta.paper_id = tp.paper_id
@@ -294,16 +294,16 @@ SELECT s.paper_id
     HAVING count(s.paper_id) = 1
 );
 
-SELECT count(tp.paper_id)
+SELECT DISTINCT count(tp.paper_id)
     FROM temp_papers tp
     INNER JOIN temp_authors ta 
-    ON ta.paper_id = tp.paper_id
+        ON ta.paper_id = tp.paper_id
     INNER JOIN temp_subjects ts 
-    ON ts.paper_id = tp.paper_id;
+        ON ts.paper_id = tp.paper_id;
 
 
 -- -- 2
--- -- Test: Author Collaboration returns the correct number of 
+-- -- Test: Author Collaboration returns the correct number of results 
 -- -- Assertion: should return 6 edges
 -- -- 
 -- -- NOTE: If we are going to weight each author, if there are n authors present, we should assign a weight of 1/(n-1) for each author for each paper
@@ -320,7 +320,7 @@ CREATE TEMPORARY TABLE temp_papers AS (
 -- combine temporary tables into an active table set
 DROP TABLE IF EXISTS active_papers;
 CREATE TEMPORARY TABLE active_papers AS (
-SELECT tp.paper_id
+SELECT DISTINCT tp.paper_id
     FROM temp_papers tp
     INNER JOIN authors ta 
     ON ta.paper_id = tp.paper_id
@@ -331,7 +331,38 @@ SELECT tp.paper_id
 -- AUTHOR COLLOBORATION
 SELECT a1.author_name, a2.author_name 
     FROM authors a1 
-    INNER JOIN ( SELECT DISTINCT paper_id FROM active_papers) ap 
+    INNER JOIN active_papers ap 
         ON ap.paper_id = a1.paper_id 
     INNER JOIN authors a2
         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name;
+
+-- -- 3
+-- -- Test: Author Collaboration returns the correct number of 
+-- -- Assertion: should return 2 values, each of count 1
+-- -- 
+
+DROP TABLE IF EXISTS temp_papers;
+CREATE TEMPORARY TABLE temp_papers AS (
+    SELECT p.paper_id
+        FROM papers p
+        WHERE paper_id = "oai:arXiv.org:0704.0109"
+);
+
+-- combine temporary tables into an active table set
+DROP TABLE IF EXISTS active_papers;
+CREATE TEMPORARY TABLE active_papers AS (
+SELECT DISTINCT tp.paper_id
+    FROM temp_papers tp
+    INNER JOIN authors ta 
+    ON ta.paper_id = tp.paper_id
+    INNER JOIN subjects ts 
+    ON ts.paper_id = tp.paper_id
+);
+
+-- SUBJECT GRAPH
+SELECT count(subject_name) AS count_sub, subject_name 
+    FROM subjects s 
+    INNER JOIN active_papers ap 
+        ON ap.paper_id = s.paper_id 
+    GROUP BY s.subject_name
+    ORDER BY count_sub DESC;
