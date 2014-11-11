@@ -1,5 +1,3 @@
-<html>
-<body>
 <?php
 
 $debug = False;
@@ -244,11 +242,9 @@ $viz_ret_1 = json_decode($viz_ret_1, true);
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
 
-$master_ret = array('vis1' => $viz_ret_1, 'vis2' => $viz_ret_2, 'vis3' => $viz_ret_3);
+$master_ret = array('viz1' => $viz_ret_1, 'viz2' => $viz_ret_2, 'viz3' => $viz_ret_3);
 echo json_encode($master_ret);
 
 mysql_close($conn);
 
 ?>
-</body>
-</html>
