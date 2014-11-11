@@ -191,6 +191,7 @@ f_mysql_query("SELECT * FROM active_papers;");
 
 // visualization specific queries
 
+// for trend anlaysis
 $query = " SELECT count_paper/count_tot_paper , selected.yr, selected.mn                                       ".
          "     FROM (                                                                                         ".
          "         SELECT count(p.paper_id) AS count_paper, year(dt_created) AS yr, month(dt_created) AS mn   ".
@@ -211,6 +212,7 @@ if ($debug) {
 	echo "<br /><br />";
 }
 
+// for subject graph
 $query = " SELECT count(subject_name) AS count_sub, subject_name ".
          "     FROM subjects s                                   ".
          "     INNER JOIN active_papers ap                       ".
@@ -224,6 +226,7 @@ if ($debug) {
 	echo "<br /><br />";
 }
 
+// for authors graph
 $query = " SELECT a1.author_name AS author_1, a2.author_name AS author_2             ".
          "     FROM authors a1                                                       ".
          "     INNER JOIN active_papers ap                                           ".
@@ -242,7 +245,7 @@ $viz_ret_1 = json_decode($viz_ret_1, true);
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
 
-$master_ret = array('viz1' => $viz_ret_1, 'viz2' => $viz_ret_2, 'viz3' => $viz_ret_3);
+$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => $viz_ret_3);
 echo json_encode($master_ret);
 
 mysql_close($conn);

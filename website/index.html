@@ -114,11 +114,11 @@
       });
   
     function main_viz(response) {
-      trend_viz(response['viz1']);
-      subject_network_viz(response['viz2']);
-      author_network_viz(response['viz3']);
-      // word_cloud_viz(data);
-      // extra_viz(data);
+      trend_viz(response['trending_data']);
+      subject_network_viz(response['subject_data']);
+      author_network_viz(response['author_data']);
+      // word_cloud_viz(data);  // to be competed in latter stages
+      // extra_viz(data); // to be competed in latter stages
     };
 
     function trend_viz(data) {
