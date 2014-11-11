@@ -14,10 +14,10 @@ Notes
 ToDo
 ----
 - RB
-	- [ ] Finish data build
-	- [ ] Move SH queries to PHP
-	- [ ] Get php to reurn multiple Query results
-	- [ ] Send specific data to specific functions
+	- [x] Finish data build
+	- [x] Move SH queries to PHP
+	- [x] Get php to reurn multiple Query results
+	- [x] Send specific data to specific functions
 	- [ ] Line Chart
 - SH
 	- [ ] finishing up on queries
