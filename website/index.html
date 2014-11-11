@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" style="heigh=100%">
 
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="css/main.css">
-		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <!--
@@ -13,46 +13,46 @@
     <script src='js/coffee.js'></script>
     <script src='js/coffee.js'></script>
     -->
-  </head>	
+  </head> 
 
-	<body style="height:100%">
+  <body style="height:100%">
 
-		<div id="header">
-			<h1>arXiv connectivity visualization</h1>
-		</div>	
+    <div id="header">
+      <h1>arXiv connectivity visualization</h1>
+    </div>  
   
-	  <div id="viz_trend">
-			<h1>viz_trend</h1>	
-		</div>
+    <div id="viz_trend">
+      <h1>viz_trend</h1>  
+    </div>
 
-		<div id="menu">
+    <div id="menu">
       <!-- <form id="form_menu" method="post" action="query.php"> -->
       <!-- <form id="form_menu" name="form_menu" method="post"> -->
       <form id="form_menu" >
-					Subjects: <input type="text" name="subjects" style="width:90%"> <br>
-					Authors: <input type="text" name="authors" style="width:90%"> <br>
-					Keywords: <input type="text" name="keywords" style="width:90%"> <br>
-					<input type="submit" value="search_arXiv" align="left">	<br>
-			</form>
-		</div>	
+          Subjects: <input type="text" name="subjects" style="width:90%"> <br>
+          Authors: <input type="text" name="authors" style="width:90%"> <br>
+          Keywords: <input type="text" name="keywords" style="width:90%"> <br>
+          <input type="submit" value="search_arXiv" align="left"> <br>
+      </form>
+    </div>  
 
-		<div id="viz_graph_subject">
-			<h1>viz_graph_subject</h1>	
-		</div>	
+    <div id="viz_graph_subject">
+      <h1>viz_graph_subject</h1>  
+    </div>  
 
-		<div id="viz_graph_author">
-			<h1>viz_graph_author</h1>	
-		</div>
+    <div id="viz_graph_author">
+      <h1>viz_graph_author</h1> 
+    </div>
 
-		<div id="viz_word_cloud">
-			<h1>viz_word_cloud</h1>	
-		</div>	
+    <div id="viz_word_cloud">
+      <h1>viz_word_cloud</h1> 
+    </div>  
 
-		<div id="extra">
-			<h1>extra</h1>
-		</div>	
+    <div id="extra">
+      <h1>extra</h1>
+    </div>  
 
-  <script type="text/javascript">
+   <script type="text/javascript">
       $(document).ready( function() {
       // variable to hold request
       var request;
@@ -113,15 +113,17 @@
         });
       });
   
-    function main_viz(data) {
-      trend_viz(data);
-      subject_network_viz(data);
-      author_network_viz(data);
-      word_cloud_viz(data);
-      extra_viz(data);
+    function main_viz(response) {
+      trend_viz(response['viz1']);
+      subject_network_viz(response['viz2']);
+      author_network_viz(response['viz3']);
+      // word_cloud_viz(data);
+      // extra_viz(data);
     };
 
     function trend_viz(data) {
+
+      console.log(data);
 
       var sampleSVG = d3.select("#viz_trend")
           .append("svg")
@@ -139,6 +141,7 @@
     };
 
     function subject_network_viz(data) {
+      console.log(data)
       var sampleSVG = d3.select("#viz_graph_subject")
           .append("svg")
           .attr("width", 100)
@@ -155,6 +158,7 @@
     };
 
     function author_network_viz(data) {
+      console.log(data)
       var sampleSVG = d3.select("#viz_graph_author")
           .append("svg")
           .attr("width", 100)

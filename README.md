@@ -28,6 +28,13 @@ ToDo
     - [ ] bubble chart
 
 
+- [x] remove set_spec as primary key
+- [ ] add data to database csv python file to build section
+	- [ ] add data section to website and put raw data there
+		- this will be good if you will continutally update the website database
+	- [ ] need to include all cleaning files
+		- sometimes there is a null field for authors that needs to be taken care of
+- [ ] find all msc codes
 - [ ] data preprocessing
 	- [x] replace '\n' with spaces
 	- [x] need to remove set spec and make paper_id by iteself to be unique
