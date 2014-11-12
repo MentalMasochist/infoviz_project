@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://d3js.org/d3.v3.js"></script>
     <script src='js/viz.js'></script>
     <!--
     If you want to try to move the viz code to separate files:
@@ -14,6 +14,30 @@
     <script src='js/coffee.js'></script>
     -->
   </head> 
+  <style>
+
+  body {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  </style>
 
   <body style="height:100%">
 
@@ -22,7 +46,6 @@
     </div>  
   
     <div id="viz_trend">
-      <h1>viz_trend</h1>  
     </div>
 
     <div id="menu">
