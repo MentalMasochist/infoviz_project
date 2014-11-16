@@ -15,7 +15,7 @@
         var $inputs = $form.find("input, select, button, textarea");
 
         var serializedData = $form.serialize();
-        console.log(serializedData);
+        // console.log(serializedData);
 
 
         $inputs.prop("disabled", true);
@@ -32,7 +32,7 @@
         // callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             // log a message to the console
-            console.log("php query successfull");
+            // console.log("php query successfull");
             console.log(response);
             main_viz(response);
         });
@@ -66,13 +66,18 @@
       // extra_viz(data); // to be competed in latter stages
     };
 
-    function trend_viz() {
+    function trend_viz(response) {
+
+      // console.log("trend viz");
+      console.log(typeof response);
+      console.log(response[0]);
 
       var margin = {top: 20, right: 20, bottom: 30, left: 50},
           width = 1000 - margin.left - margin.right,
           height = 270 - margin.top - margin.bottom;
 
-      var parseDate = d3.time.format("%d-%b-%y").parse;
+      // var parseDate = d3.time.format("%d-%b-%y").parse;
+      var parseDate = d3.time.format("%Y-%d").parse;
 
       var x = d3.time.scale()
           .range([0, width]);
@@ -90,7 +95,7 @@
 
       var line = d3.svg.line()
           .x(function(d) { return x(d.date); })
-          .y(function(d) { return y(d.close); });
+          .y(function(d) { return y(d.paper_freq); });
 
       var svg = d3.select("#viz_trend").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -98,14 +103,20 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      d3.tsv("./data/trend.tsv", function(error, data) {
-        data.forEach(function(d) {
+      // d3.tsv("./data/trend.tsv", function(error, data) {
+      //   data.forEach(function(d) {
+      //     d.date = parseDate(d.date);
+      //     d.paper_freq = +d.paper_freq;
+      //   });
+
+        root = response;
+        root.forEach(function(d) {
           d.date = parseDate(d.date);
-          d.close = +d.close;
+          d.paper_freq = +d.paper_freq;
         });
 
-        x.domain(d3.extent(data, function(d) { return d.date; }));
-        y.domain(d3.extent(data, function(d) { return d.close; }));
+        x.domain(d3.extent(root, function(d) { return d.date; }));
+        y.domain(d3.extent(root, function(d) { return d.paper_freq; }));
 
         svg.append("g")
             .attr("class", "x axis")
@@ -120,17 +131,15 @@
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Price ($)");
+            .text("Popularity");
 
         svg.append("path")
-            .datum(data)
+            .datum(root)
             .attr("class", "line")
             .attr("d", line);
-      });
-    };
+      };
 
     function subject_network_viz(data) {
-      console.log(data)
       var sampleSVG = d3.select("#viz_graph_subject")
           .append("svg")
           .attr("width", 100)
