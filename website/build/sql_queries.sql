@@ -227,19 +227,20 @@ SELECT DISTINCT tp.paper_id
 -- 
 
 -- TREND GRAPH
-SELECT count_paper/count_tot_paper, selected.yr, selected.mn 
+SELECT count_paper/count_tot_paper, DATE_FORMAT(selected.dt_created, '%Y-%m') AS date
     FROM (
-        SELECT count(p.paper_id) AS count_paper, year(dt_created) AS yr, month(dt_created) AS mn 
+        SELECT count(p.paper_id) AS count_paper, dt_created 
             FROM papers p 
             INNER JOIN active_papers ap 
                 ON p.paper_id = ap.paper_id 
-                GROUP BY yr, mn
+                GROUP BY year(dt_created), month(dt_created)
         ) selected 
     INNER JOIN (
-        SELECT count(paper_id) AS count_tot_paper, year(dt_created) AS yr, month(dt_created) AS mn 
+        SELECT count(paper_id) AS count_tot_paper, dt_created 
             FROM papers 
             GROUP BY year(dt_created), month(dt_created)) total 
-    ON selected.yr = total.yr AND selected.mn = total.mn;
+    ON YEAR(selected.dt_created) = YEAR(total.dt_created) 
+    AND MONTH(selected.dt_created) = MONTH(total.dt_created);
 
 
 -- SUBJECT GRAPH
