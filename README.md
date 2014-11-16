@@ -18,6 +18,7 @@ ToDo
 	- [x] Move SH queries to PHP
 	- [x] Get php to reurn multiple Query results
 	- [x] Send specific data to specific functions
+	- [ ] preprocessing -- need to get the dates to conform to d3 standard -- put as yyyy-mm-dd with zero fill
 	- [ ] Line Chart
 - SH
 	- [ ] finishing up on queries
