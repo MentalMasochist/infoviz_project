@@ -1,5 +1,8 @@
 <?php
 
+// close connection if one already exists
+mysql_close($conn);
+
 $debug = False;
 
 function f_mysql_query($query) {
@@ -146,7 +149,7 @@ if (empty($form_papers)) {
 		echo "<br /><br />";
 	}
 
-	// creat temporary table
+	// create temporary table
 	if(! mysql_query($query) ) { die('Could not load into table: ' . mysql_error()); }
 	if ($debug) {
 		echo "temp table created<br />";
@@ -192,23 +195,25 @@ f_mysql_query("SELECT * FROM active_papers;");
 // visualization specific queries
 
 // for trend anlaysis
-$query = " SELECT count_paper/count_tot_paper , selected.yr, selected.mn                                       ".
-         "     FROM (                                                                                         ".
-         "         SELECT count(p.paper_id) AS count_paper, year(dt_created) AS yr, month(dt_created) AS mn   ".
-         "             FROM papers p                                                                          ".
-         "             INNER JOIN active_papers ap                                                            ".
-         "                 ON p.paper_id = ap.paper_id                                                        ".
-         "                 GROUP BY yr, mn                                                                    ".
-         "         ) selected                                                                                 ".
-         "     INNER JOIN (                                                                                   ".
-         "         SELECT count(paper_id) AS count_tot_paper, year(dt_created) AS yr, month(dt_created) AS mn ".
-         "             FROM papers                                                                            ".
-         "             GROUP BY year(dt_created), month(dt_created)) total                                    ".
-         "     ON selected.yr = total.yr AND selected.mn = total.mn;                                          ";
+$query = " SELECT count_paper/count_tot_paper as paper_freq,                                     ".
+		 " DATE_FORMAT(selected.dt_created, '%Y-%m') as date                                     ".
+      	 "     FROM (                                                                            ".
+      	 "         SELECT count(p.paper_id) AS count_paper, dt_created                           ".
+      	 "             FROM papers p                                                             ".
+      	 "             INNER JOIN active_papers ap                                               ".
+      	 "                 ON p.paper_id = ap.paper_id                                           ".
+      	 "                 GROUP BY year(dt_created), month(dt_created)                          ".
+      	 "         ) selected                                                                    ".
+      	 "     INNER JOIN (                                                                      ".
+      	 "         SELECT count(paper_id) AS count_tot_paper, dt_created                         ".
+      	 "             FROM papers                                                               ".
+      	 "             GROUP BY year(dt_created), month(dt_created)) total                       ".
+      	 "     ON YEAR(selected.dt_created) = YEAR(total.dt_created)                             ".
+      	 "     AND MONTH(selected.dt_created) = MONTH(total.dt_created);                         ";
 
 $viz_ret_1 = f_mysql_query($query);
 if ($debug) {
-	echo $viz_ret_1;
+	// echo $viz_ret_1;
 	echo "<br /><br />";
 }
 
@@ -222,7 +227,7 @@ $query = " SELECT count(subject_name) AS count_sub, subject_name ".
 
 $viz_ret_2 = f_mysql_query($query);
 if ($debug) {
-	echo $viz_ret_2;
+	// echo $viz_ret_2;
 	echo "<br /><br />";
 }
 
