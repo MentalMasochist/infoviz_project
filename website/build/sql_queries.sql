@@ -183,7 +183,7 @@ DROP TABLE IF EXISTS temp_papers;
 CREATE TEMPORARY TABLE temp_papers AS (
     SELECT p.paper_id
         FROM papers p
-        WHERE MATCH (p.title, p.description) AGAINST (' ' IN BOOLEAN MODE)
+        WHERE MATCH (p.title, p.description) AGAINST ('Seiberg-Witten' IN BOOLEAN MODE)
 );
 
 -- authors temp table
@@ -227,20 +227,35 @@ SELECT DISTINCT tp.paper_id
 -- 
 
 -- TREND GRAPH
-SELECT count_paper/count_tot_paper, DATE_FORMAT(selected.dt_created, '%Y-%m') AS date
+-- by year-month
+SELECT  selected.count_paper/total.count_paper as freq, selected.date
     FROM (
-        SELECT count(p.paper_id) AS count_paper, dt_created 
+        SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
             FROM papers p 
             INNER JOIN active_papers ap 
                 ON p.paper_id = ap.paper_id 
                 GROUP BY year(dt_created), month(dt_created)
         ) selected 
     INNER JOIN (
-        SELECT count(paper_id) AS count_tot_paper, dt_created 
+        SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
             FROM papers 
             GROUP BY year(dt_created), month(dt_created)) total 
-    ON YEAR(selected.dt_created) = YEAR(total.dt_created) 
-    AND MONTH(selected.dt_created) = MONTH(total.dt_created);
+    ON selected.date = total.date;
+
+-- by year
+SELECT  selected.count_paper/total.count_paper as freq, selected.date
+    FROM (
+        SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y') AS date 
+            FROM papers p 
+            INNER JOIN active_papers ap 
+                ON p.paper_id = ap.paper_id 
+                GROUP BY year(dt_created)
+        ) selected 
+    INNER JOIN (
+        SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y') AS date 
+            FROM papers 
+            GROUP BY year(dt_created)) total 
+    ON selected.date = total.date;
 
 
 -- SUBJECT GRAPH
@@ -370,3 +385,4 @@ SELECT count(subject_name) AS count_sub, subject_name
         ON ap.paper_id = s.paper_id 
     GROUP BY s.subject_name
     ORDER BY count_sub DESC;
+    
