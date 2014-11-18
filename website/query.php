@@ -198,24 +198,25 @@ f_mysql_query("SELECT * FROM active_papers;");
 
 // visualization specific queries
 
-// for trend anlaysis 
-// (groupby year-month)
-$query = " SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, total.date            ".
-         "     FROM (                                                                                ".
-         "         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date ".
-         "             FROM papers p                                                                 ".
-         "             INNER JOIN active_papers ap                                                   ".
-         "                 ON p.paper_id = ap.paper_id                                               ".
-         "                 GROUP BY year(dt_created), month(dt_created)                              ".
-         "         ) selected                                                                        ".
-         "     RIGHT JOIN (                                                                          ".
-         "         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date  ".
-         "             FROM papers                                                                   ".
-         "             GROUP BY year(dt_created), month(dt_created)) total                           ".
-         "     ON selected.date = total.date;                                                        ";
+// // for trend anlaysis 
+// // (groupby year-month)
+// $query = " SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper AS DECIMAL(12,10)) as freq, total.date ".
+//          "     FROM (                                                                                             ".
+//          "         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date              ".
+//          "             FROM papers p                                                                              ".
+//          "             INNER JOIN active_papers ap                                                                ".
+//          "                 ON p.paper_id = ap.paper_id                                                            ".
+//          "                 GROUP BY year(dt_created), month(dt_created)                                           ".
+//          "         ) selected                                                                                     ".
+//          "     RIGHT JOIN (                                                                                       ".
+//          "         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date               ".
+//          "             FROM papers                                                                                ".
+//          "             GROUP BY year(dt_created), month(dt_created)) total                                        ".
+//          "     ON selected.date = total.date                                                                      ". 
+//          "     WHERE total.date >= 1992;                                                                           ";
 
 // (groupby year)
-$query = " SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, CONCAT(total.date,'-01') AS date ".
+$query = " SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper AS DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date ".
          "     FROM (                                                                                           ".
          "         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y') AS date               ".
          "             FROM papers p                                                                            ".
@@ -227,7 +228,8 @@ $query = " SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, C
          "         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y') AS date                ".
          "             FROM papers                                                                              ".
          "             GROUP BY year(dt_created)) total                                                         ".
-         "     ON selected.date = total.date;                                                                   ";
+         "     ON selected.date = total.date                                                                    ".
+         "     WHERE total.date >= 1992;                                                                         ";
 
 $viz_ret_1 = f_mysql_query($query);
 if ($debug) {
