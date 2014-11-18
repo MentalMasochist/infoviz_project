@@ -70,10 +70,9 @@
 
       // console.log("trend viz");
       console.log(typeof response);
-      console.log(response[0]);
 
-      var margin = {top: 20, right: 20, bottom: 30, left: 50},
-          width = 1000 - margin.left - margin.right,
+      var margin = {top: 20, right: 50, bottom: 30, left: 70},
+          width = 1125 - margin.left - margin.right,
           height = 270 - margin.top - margin.bottom;
 
       // var parseDate = d3.time.format("%d-%b-%y").parse;
@@ -95,7 +94,7 @@
 
       var line = d3.svg.line()
           .x(function(d) { return x(d.date); })
-          .y(function(d) { return y(d.paper_freq); });
+          .y(function(d) { return y(d.freq); });
 
       var svg = d3.select("#viz_trend").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -106,17 +105,17 @@
       // d3.tsv("./data/trend.tsv", function(error, data) {
       //   data.forEach(function(d) {
       //     d.date = parseDate(d.date);
-      //     d.paper_freq = +d.paper_freq;
+      //     d.freq = +d.freq;
       //   });
 
         root = response;
         root.forEach(function(d) {
           d.date = parseDate(d.date);
-          d.paper_freq = +d.paper_freq;
+          d.freq = +d.freq;
         });
 
         x.domain(d3.extent(root, function(d) { return d.date; }));
-        y.domain(d3.extent(root, function(d) { return d.paper_freq; }));
+        y.domain(d3.extent(root, function(d) { return d.freq; }));
 
         svg.append("g")
             .attr("class", "x axis")
@@ -131,7 +130,7 @@
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Popularity");
+            .text("Frequency");
 
         svg.append("path")
             .datum(root)
