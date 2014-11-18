@@ -387,3 +387,41 @@ SELECT count(subject_name) AS count_sub, subject_name
     GROUP BY s.subject_name
     ORDER BY count_sub DESC;
 
+-- -- 4
+-- -- Testing trends
+-- --
+
+-- papers temp table
+DROP TABLE IF EXISTS temp_papers;
+CREATE TEMPORARY TABLE temp_papers AS (
+    SELECT p.paper_id
+        FROM papers p
+        WHERE MATCH (p.title, p.description) AGAINST ('radius' IN BOOLEAN MODE)
+);
+
+-- combine temporary tables into an active table set
+DROP TABLE IF EXISTS active_papers;
+CREATE TEMPORARY TABLE active_papers AS (
+SELECT DISTINCT tp.paper_id
+    FROM temp_papers tp
+    INNER JOIN authors ta 
+    ON ta.paper_id = tp.paper_id
+    INNER JOIN subjects ts 
+    ON ts.paper_id = tp.paper_id
+);
+
+-- by year-month
+SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
+    FROM (
+        SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
+            FROM papers p 
+            INNER JOIN active_papers ap 
+                ON p.paper_id = ap.paper_id 
+                GROUP BY year(dt_created), month(dt_created)
+        ) selected 
+    RIGHT JOIN (
+        SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
+            FROM papers 
+            GROUP BY year(dt_created), month(dt_created)) total 
+    ON selected.date = total.date
+    WHERE total.date > 1900;
