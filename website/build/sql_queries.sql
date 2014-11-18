@@ -228,7 +228,7 @@ SELECT DISTINCT tp.paper_id
 
 -- TREND GRAPH
 -- by year-month
-SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, total.date
+SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
     FROM (
         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
             FROM papers p 
@@ -240,10 +240,11 @@ SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, total.date
         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
             FROM papers 
             GROUP BY year(dt_created), month(dt_created)) total 
-    ON selected.date = total.date;
+    ON selected.date = total.date
+    WHERE total.date > 1900;
 
 -- by year
-SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, CONCAT(total.date,'-01') AS date
+SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
     FROM (
         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y') AS date 
             FROM papers p 
@@ -255,7 +256,8 @@ SELECT  coalesce(selected.count_paper,0)/total.count_paper as freq, CONCAT(total
         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y') AS date 
             FROM papers 
             GROUP BY year(dt_created)) total 
-    ON selected.date = total.date;
+    ON selected.date = total.date
+    WHERE total.date > 1900;
 
 -- SUBJECT GRAPH
 SELECT count(subject_name) AS count_sub, subject_name 
