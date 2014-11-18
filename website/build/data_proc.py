@@ -45,13 +45,11 @@ def create_db_files():
         d_line = ast.literal_eval(line[0])
         # papers table
         paper_id = d_line['paperID']
-        title =  d_line['title'][0].replace('\\n', ' ')
-        title = title.replace('\\r', ' ')
+        title =  d_line['title'][0].replace('\n', ' ')
         dt_created = d_line['date'][0]
         print dt_created
         set_spec = d_line['setSpec'][0]
-        description = d_line['description'][0].replace('\\n', ' ')
-        description = description.replace('\\r', ' ')
+        description = d_line['description'][0].replace('\n', ' ')
         wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
         for author in d_line['creator']:
@@ -59,21 +57,7 @@ def create_db_files():
         # subjects table
         for subject in d_line['subject']:
             try:
-                string = ''
-                prev = 0
-                sub = subject.encode('utf8')
-                for i0, i in enumerate(sub):
-                    if i.isupper():
-                        if prev != 0:
-                            string += ' ' + sub[prev:i0]
-                        else:
-                            string += sub[prev:i0]
-                        prev = i0
-                if prev != 0:
-                    string += ' '+sub[prev:len(r[2])]
-                else:
-                    string += sub[prev:len(r[2])]
-                wtr_subjects.writerow([paper_id, set_spec, string])    
+                wtr_subjects.writerow([paper_id, set_spec, subject.encode('utf8')])    
             except:
                 print d_line['subject']
 
