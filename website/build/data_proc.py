@@ -17,9 +17,14 @@ def move_all():
             if ct % 2 == 0:
                 d_line = ast.literal_eval(line)
             else:
+                print
+                print line
                 paperID = setSpec = line.split('</identifier>')[0].split('<identifier>')[-1]
+                print paperID
                 d_line['paperID'] = paperID 
                 setSpec = line.split('</setSpec>')[0].split('<setSpec>')[-1]
+                print setSpec
+                exit()
                 d_line['setSpec'] = setSpec 
                 fout.writerow([str(d_line)])
             ct += 1
@@ -47,8 +52,7 @@ def create_db_files():
         paper_id = d_line['paperID']
         title =  d_line['title'][0].replace('\n', ' ')
         dt_created = d_line['date'][0]
-        print dt_created
-        set_spec = d_line['setSpec'][0]
+        set_spec = d_line['setSpec']
         description = d_line['description'][0].replace('\n', ' ')
         wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
