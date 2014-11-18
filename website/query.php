@@ -3,6 +3,10 @@
 // close connection if one already exists
 mysql_close($conn);
 
+// needed for large queries
+set_time_limit(0);
+ini_set('memory_limit', '-1');
+
 $debug = False;
 
 function f_mysql_query($query) {
@@ -194,40 +198,57 @@ f_mysql_query("SELECT * FROM active_papers;");
 
 // visualization specific queries
 
-// for trend anlaysis
-$query = " SELECT count_paper/count_tot_paper as paper_freq,                                     ".
-		 " DATE_FORMAT(selected.dt_created, '%Y-%m') as date                                     ".
-      	 "     FROM (                                                                            ".
-      	 "         SELECT count(p.paper_id) AS count_paper, dt_created                           ".
-      	 "             FROM papers p                                                             ".
-      	 "             INNER JOIN active_papers ap                                               ".
-      	 "                 ON p.paper_id = ap.paper_id                                           ".
-      	 "                 GROUP BY year(dt_created), month(dt_created)                          ".
-      	 "         ) selected                                                                    ".
-      	 "     INNER JOIN (                                                                      ".
-      	 "         SELECT count(paper_id) AS count_tot_paper, dt_created                         ".
-      	 "             FROM papers                                                               ".
-      	 "             GROUP BY year(dt_created), month(dt_created)) total                       ".
-      	 "     ON YEAR(selected.dt_created) = YEAR(total.dt_created)                             ".
-      	 "     AND MONTH(selected.dt_created) = MONTH(total.dt_created);                         ";
+// // for trend anlaysis 
+// // (groupby year-month)
+// $query = " SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper AS DECIMAL(12,10)) as freq, total.date ".
+//          "     FROM (                                                                                             ".
+//          "         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date              ".
+//          "             FROM papers p                                                                              ".
+//          "             INNER JOIN active_papers ap                                                                ".
+//          "                 ON p.paper_id = ap.paper_id                                                            ".
+//          "                 GROUP BY year(dt_created), month(dt_created)                                           ".
+//          "         ) selected                                                                                     ".
+//          "     RIGHT JOIN (                                                                                       ".
+//          "         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date               ".
+//          "             FROM papers                                                                                ".
+//          "             GROUP BY year(dt_created), month(dt_created)) total                                        ".
+//          "     ON selected.date = total.date                                                                      ". 
+//          "     WHERE total.date >= 1992;                                                                           ";
+
+// (groupby year)
+$query = " SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper AS DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date ".
+         "     FROM (                                                                                           ".
+         "         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y') AS date               ".
+         "             FROM papers p                                                                            ".
+         "             INNER JOIN active_papers ap                                                              ".
+         "                 ON p.paper_id = ap.paper_id                                                          ".
+         "                 GROUP BY year(dt_created)                                                            ".
+         "         ) selected                                                                                   ".
+         "     RIGHT JOIN (                                                                                     ".
+         "         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y') AS date                ".
+         "             FROM papers                                                                              ".
+         "             GROUP BY year(dt_created)) total                                                         ".
+         "     ON selected.date = total.date                                                                    ".
+         "     WHERE total.date >= 1992;                                                                         ";
 
 $viz_ret_1 = f_mysql_query($query);
 if ($debug) {
-	// echo $viz_ret_1;
+	echo $viz_ret_1;
 	echo "<br /><br />";
 }
 
 // for subject graph
 $query = " SELECT count(subject_name) AS count_sub, subject_name ".
-         "     FROM subjects s                                   ".
-         "     INNER JOIN active_papers ap                       ".
-         "         ON ap.paper_id = s.paper_id                   ".
-         "     GROUP BY s.subject_name                           ".
-         "     ORDER BY count_sub DESC;                          ";
+"     FROM subjects s                                   ".
+"     INNER JOIN active_papers ap                       ".
+"         ON ap.paper_id = s.paper_id                   ".
+"     GROUP BY s.subject_name                           ".
+"     ORDER BY count_sub DESC;                          ";
+
 
 $viz_ret_2 = f_mysql_query($query);
 if ($debug) {
-	// echo $viz_ret_2;
+	echo $viz_ret_2;
 	echo "<br /><br />";
 }
 
