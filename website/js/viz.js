@@ -169,11 +169,14 @@
         json = response;  
 
         json.links.forEach(function(d) {
-          d['source'] = +d['source'] -1;
-          d['target'] = +d['target'] -1;
+          d['source'] = (+d['source']) -1;
+          d['target'] = (+d['target']) -1;
           d['value'] = +d['value'];
         });
 
+        json.nodes.forEach(function(d) {
+          d['nodeSize'] = +d['nodeSize'];
+        });
 
         console.log(json);
         console.log(json.links[0]);
