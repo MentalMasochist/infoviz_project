@@ -268,9 +268,6 @@ $query = " CREATE TEMPORARY TABLE active_authors (             ".
          "     nodeSize INTEGER NOT NULL                       ".
          "     );                                              ";
 
-echo $query;
-echo "<br /><br />";
-
 if ($debug) {
 	echo $query;
 	echo "<br /><br />";
