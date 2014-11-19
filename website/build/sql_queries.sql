@@ -503,7 +503,6 @@ SELECT 0 as "group", name, nodeSize
 CREATE TABLE active_authors_2 LIKE active_authors; 
 INSERT active_authors_2 SELECT * FROM active_authors;
 
--- AUTHOR COLLOBORATION
 SELECT aa1.id AS source, aa2.id AS target, count(ap.paper_id) as value 
     FROM authors a1 
     INNER JOIN active_papers ap 
