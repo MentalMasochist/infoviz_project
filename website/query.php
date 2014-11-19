@@ -7,7 +7,7 @@ mysql_close($conn);
 set_time_limit(0);
 ini_set('memory_limit', '-1');
 
-$debug = True;
+$debug = False;
 
 function f_mysql_query($query) {
 
@@ -252,13 +252,54 @@ if ($debug) {
 	echo "<br /><br />";
 }
 
-// for authors graph
-$query = " SELECT a1.author_name AS author_1, a2.author_name AS author_2             ".
-         "     FROM authors a1                                                       ".
-         "     INNER JOIN active_papers ap                                           ".
-         "         ON ap.paper_id = a1.paper_id                                      ".
-         "     INNER JOIN authors a2                                                 ".
-         "         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name; ";
+// Author Collaboration Queries
+// $query = " SELECT a1.author_name AS author_1, a2.author_name AS author_2             ".
+//          "     FROM authors a1                                                       ".
+//          "     INNER JOIN active_papers ap                                           ".
+//          "         ON ap.paper_id = a1.paper_id                                      ".
+//          "     INNER JOIN authors a2                                                 ".
+//          "         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name; ";
+
+/////////////////////////////////////////////////////////////////////////////
+
+$query = " CREATE TEMPORARY TABLE active_authors (             ".
+         "     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, ".
+         "     name VARCHAR(100) NOT NULL,                     ".
+         "     nodeSize INTEGER NOT NULL                       ".
+         "     );                                              ";
+
+echo $query;
+echo "<br /><br />";
+
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
+if(! mysql_query($query) ) { die('author collab query error' . mysql_error()); }
+if ($debug) {
+	echo "<br /><br />";
+}
+
+$query = " INSERT INTO active_authors (name, nodeSize)                  ".
+         " SELECT a.author_name AS name, count(ap.paper_id) as nodeSize ".
+         "     FROM authors a                                           ".
+         "     INNER JOIN active_papers ap                              ".
+         "     ON ap.paper_id = a.paper_id                              ".
+         "     GROUP BY a.author_name                                   ".
+         "     HAVING count(ap.paper_id) >= 0                           ".
+         "     ORDER BY count(ap.paper_id) DESC;                        ";
+
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
+if(! mysql_query($query) ) { die('author collab query error' . mysql_error()); }
+if ($debug) {
+	echo "<br /><br />";
+}
+
+$query = " SELECT 0 as \"group\", name, nodeSize ".             
+         "     FROM active_authors;            ";  
 
 $viz_ret_3 = f_mysql_query($query);
 if ($debug) {
@@ -266,12 +307,67 @@ if ($debug) {
 	echo "<br /><br />";
 }
 
+$query = " DROP TABLE IF EXISTS active_authors_2;    ";
+
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
+if(! mysql_query($query) ) { die('author collab query error' . mysql_error()); }
+if ($debug) {
+	echo "<br /><br />";
+}
+
+$query = " CREATE TABLE active_authors_2 LIKE active_authors;    ";
+
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
+if(! mysql_query($query) ) { die('author collab query error' . mysql_error()); }
+if ($debug) {
+	echo "<br /><br />";
+}
+
+$query = " INSERT active_authors_2 SELECT * FROM active_authors; ";  
+
+if ($debug) {
+	echo $query;
+	echo "<br /><br />";
+}
+if(! mysql_query($query) ) { die('author collab query error' . mysql_error()); }
+if ($debug) {
+	echo "<br /><br />";
+}
+
+$query = " SELECT aa1.id AS source, aa2.id AS target, count(ap.paper_id) as value   ".
+         "     FROM authors a1                                                      ".
+         "     INNER JOIN active_papers ap                                          ".
+         "         ON ap.paper_id = a1.paper_id                                     ".
+         "     INNER JOIN authors a2                                                ".
+         "         ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name ".
+         "     LEFT JOIN active_authors aa1                                         ".
+         "         ON aa1.name = a1.author_name                                     ".
+         "     LEFT JOIN  active_authors_2 aa2                                      ".
+         "         ON aa2.name = a2.author_name                                     ".
+         "     GROUP BY a1.author_name, a2.author_name;                             ";
+$viz_ret_4 = f_mysql_query($query);
+if ($debug) {
+	echo $viz_ret_4;
+	echo "<br /><br />";
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+
 // combining everthing together
 $viz_ret_1 = json_decode($viz_ret_1, true); 
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
+$viz_ret_4 = json_decode($viz_ret_4, true); 
 
-$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => $viz_ret_3);
+
+$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => array('nodes' => $viz_ret_3, 'links' => $viz_ret_4));
 echo json_encode($master_ret);
 
 mysql_close($conn);
