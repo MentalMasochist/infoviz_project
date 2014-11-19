@@ -41,7 +41,7 @@ def create_db_files():
     ct = 0
     for line in f_master:
         ct += 1
-        if ct % 1000 == 0:
+        if ct % 10000 == 0:
             print ct
         # conver to dict
         d_line = ast.literal_eval(line[0])
@@ -56,6 +56,16 @@ def create_db_files():
         wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
         for author in d_line['creator']:
+            author_parts = author.split(',')
+            if len(author_parts) == 2:
+                author_parts = author_parts
+                author = author_parts[1].strip() + " " + author_parts[0].strip()                
+            if len(author_parts) == 3:
+                author_parts = author_parts
+                author = author_parts[2].strip() + " " + author_parts[0].strip() + " " + author_parts[1].strip()
+            if len(author_parts) > 4:
+                # nothing appears to be in this region, print in case there is
+                print "strange commas for author: ", author  
             wtr_authors.writerow([paper_id, set_spec, author.encode('utf8')])
         # subjects table
         for subject in d_line['subject']:
