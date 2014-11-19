@@ -142,8 +142,8 @@
 
       var sampleSVG = d3.select("#viz_graph_subject")
           .append("svg")
-          .attr("width", 100)
-          .attr("height", 100);    
+          .attr("width", 700)
+          .attr("height", 50);    
 
       sampleSVG.append("circle")
           .style("stroke", "gray")
@@ -164,7 +164,7 @@
           .append("svg:svg")
             .attr("width", w)
             .attr("height", h)
-            .attr("transform", "translate(" + -100 + "," + 0 + ")");
+            .attr("transform", "translate(" + -100 + "," + -45 + ")");
 
         json = response;  
 
@@ -182,8 +182,8 @@
         console.log(json.links[0]);
 
         var force = d3.layout.force()
-            .charge(-20)
-            .linkDistance(20)
+            .charge(-200)
+            .linkDistance(40)
             .nodes(json.nodes)
             .links(json.links)
             .size([w, h])
@@ -205,7 +205,7 @@
             .attr("class", "node")
 
           node.append("svg:circle")
-            .attr("r", 5)
+            .attr("r", 3)
               .style("fill", function(d) { return fill(d.group); })
           .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));;
             //.call(force.drag);
