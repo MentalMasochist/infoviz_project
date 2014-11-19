@@ -41,16 +41,18 @@ def create_db_files():
     ct = 0
     for line in f_master:
         ct += 1
+        if ct % 1000 == 0:
+            print ct
         # conver to dict
         d_line = ast.literal_eval(line[0])
         # papers table
         paper_id = d_line['paperID']
-        title =  d_line['title'][0].replace('\\n', ' ')
-        title = title.replace('\\r','')
+        title =  d_line['title'][0].replace('\n', ' ')
+        title = title.replace('\r','')
         dt_created = d_line['date'][0]
         set_spec = d_line['setSpec']
-        description = d_line['description'][0].replace('\\n', ' ')
-        description = description.replace('\\r','')
+        description = d_line['description'][0].replace('\n', ' ')
+        description = description.replace('\r','')
         wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
         for author in d_line['creator']:
