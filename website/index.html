@@ -7,7 +7,8 @@
     <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <!-- // <script src="http://d3js.org/d3.v3.js"></script> -->
-    <script type="text/javascript" src="d3/d3.js"></script>
+     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <!-- // <script type="text/javascript" src="d3/d3.js"></script> -->
     <script src='js/viz.js'></script>
     <!--
     If you want to try to move the viz code to separate files:
@@ -16,6 +17,23 @@
     -->
   </head> 
   <style>
+    circle.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+  line.link {
+    stroke: #999;
+    stroke-opacity: .6;
+  }
+
+  .nodetext { pointer-events: none; font: 10px}
+
+  text {
+    font: 11px sans-serif;
+    pointer-events: none;
+  }
+
 
   body {
     font: 10px sans-serif;
