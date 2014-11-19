@@ -21,18 +21,25 @@ ToDo
 	- [x] Send specific data to specific functions
 	- [x] preprocessing -- need to get the dates to conform to d3 standard -- put as yyyy-mm-dd with zero fill
 	- [x] Line Chart
+	- [x] Author Chart
 - SH
+	- [ ] subject mapping
+    - [ ] subject chart
 	- [x] finishing up on queries
 	- [x] remove \r characters from subject names
-	- [ ] MSC mapping
 	- [x] Insert space in subject names if needed
 	- [not necc] normalization
-    - [ ] bubble chart
 
+- [ ] multiple names is not intuitive
+	- figure out how to only get Eward witten
+	- would it be better to swtich the names to not be "lastname, firstname"?
+- [ ] apply a power function to collaboration graph such that the increase edge weight is magnified
+- [ ] put limits on search based on either a top X or by paper count (i.e.\ importance)
+- [ ] remove \r from subjects
 - [ ] find all msc codes
 - [ ] build out visualizations
 	- [x] trends
-	- [ ] subject graph
+	- [x] subject graph
 	- [ ] author graph
 	- [not necc] word cloud
 	- [not necc] extra
