@@ -167,11 +167,20 @@
             .attr("transform", "translate(" + -100 + "," + 0 + ")");
 
         json = response;  
+
+        json.links.forEach(function(d) {
+          d['source'] = +d['source'] -1;
+          d['target'] = +d['target'] -1;
+          d['value'] = +d['value'];
+        });
+
+
         console.log(json);
+        console.log(json.links[0]);
 
         var force = d3.layout.force()
             .charge(-20)
-            .linkDistance(10)
+            .linkDistance(20)
             .nodes(json.nodes)
             .links(json.links)
             .size([w, h])
