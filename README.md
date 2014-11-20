@@ -28,6 +28,13 @@ ToDo
 - SH
 	- [ ] subject mapping
     - [ ] subject chart
+    	- what do the different color mean?
+    	- can we figure out how to stuff more words into each bubble
+    	and how to shut off words if the size is too small
+    	- figure out how to show the count of papers of each subject to show for each bubble that we hover over? 
+    	- do we need to separate sub-subjects and subjects?
+    		- color code(and have legend) for subjects, and have bubbles for sub-subjects 
+    			- need to make sure that bubbles of similar subject are tangent
 	- [x] finishing up on queries
 	- [x] remove \r characters from subject names
 	- [x] Insert space in subject names if needed
