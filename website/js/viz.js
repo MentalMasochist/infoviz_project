@@ -61,7 +61,7 @@
     function main_viz(response) {
       trend_viz(response['trending_data']);
       author_network_viz(response['author_data']);
-      // subject_network_viz(response['subject_data']);
+      subject_network_viz(response['subject_data']);
       // word_cloud_viz(data);  // to be competed in latter stages
       // extra_viz(data); // to be competed in latter stages
     };
@@ -138,21 +138,51 @@
             .attr("d", line);
       };
 
-    function subject_network_viz(data) {
+    function subject_network_viz(response) {
 
-      var sampleSVG = d3.select("#viz_graph_subject")
-          .append("svg")
-          .attr("width", 700)
-          .attr("height", 50);    
+    var diameter = 200,
+    format = d3.format(",d"),
+    color = d3.scale.category20c();
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    var bubble = d3.layout.pack()
+      .sort(null)
+      .size([diameter, diameter])
+      .padding(1.5);
+
+    var svg = d3.select("#viz_graph_subject").append("svg")
+      .attr("width", diameter)
+      .attr("height", diameter)
+      .attr("class", "bubble");
+
+    var node = svg.selectAll(".node")
+      .data(bubble.nodes(processData(response))
+      .filter(function(d) { return !d.children; }))
+      .enter().append("g")
+      .attr("class", "node")  
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+    node.append("title")
+      .text(function(d) { return d.className + ": " + format(d.value); });
+
+    node.append("circle")
+      .attr("r", function(d) { return d.r; })
+      .style("fill", function(d) { return color(d.packageName); });
+
+    node.append("text")
+      .attr("dy", ".3em")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.className.substring(0, d.r / 3); });
+
+    function processData(response) {
+      var classes = [];
+      response.forEach(function (d){
+          classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
+        }
+      );
+        return {children: classes};
+    }  
+
+
     };
 
     function author_network_viz(response) { 
