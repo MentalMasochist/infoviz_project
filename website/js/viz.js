@@ -15,8 +15,6 @@
         var $inputs = $form.find("input, select, button, textarea");
 
         var serializedData = $form.serialize();
-        // console.log(serializedData);
-
 
         $inputs.prop("disabled", true);
 
@@ -32,8 +30,6 @@
         // callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
             // log a message to the console
-            // console.log("php query successfull");
-            console.log(response);
             main_viz(response);
         });
 
@@ -59,6 +55,9 @@
       });
   
     function main_viz(response) {
+      d3.select("#viz_trend").select("svg").remove()
+      d3.select("#viz_graph_subject").select("svg").remove()
+      d3.select("#viz_graph_author").select("svg").remove()
       trend_viz(response['trending_data']);
       author_network_viz(response['author_data']);
       subject_network_viz(response['subject_data']);
@@ -67,9 +66,6 @@
     };
 
     function trend_viz(response) {
-
-      // console.log("trend viz");
-      console.log(typeof response);
 
       var margin = {top: 20, right: 50, bottom: 30, left: 70},
           width = 1125 - margin.left - margin.right,
@@ -207,9 +203,6 @@
         json.nodes.forEach(function(d) {
           d['nodeSize'] = +d['nodeSize'];
         });
-
-        console.log(json);
-        console.log(json.links[0]);
 
         var force = d3.layout.force()
             .charge(-200)
