@@ -130,12 +130,6 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      // d3.tsv("./data/trend.tsv", function(error, data) {
-      //   data.forEach(function(d) {
-      //     d.date = parseDate(d.date);
-      //     d.freq = +d.freq;
-      //   });
-
         root = response;
         root.forEach(function(d) {
           d.date = parseDate(d.date);
@@ -221,20 +215,27 @@
       );
         return {children: classes};
     }  
-
-
     };
 
     function author_network_viz(response, width, height) { 
-        var w = 500,
-            h = 334,
-            fill = d3.scale.category20();
+
+      var min_dim = Math.min(width,height);
+      var max_dim = Math.max(width,height);
+
+      var margin = {top: Math.ceil(0.01*height) + Math.ceil(Math.max(height-width,0)/2), 
+                    right: Math.ceil(0.01*width), 
+                    bottom: Math.ceil(0.01*height), 
+                    left: Math.ceil(0.01*width) + Math.ceil(Math.max(width-height,0)/2)},
+          width = width,
+          height = height;
+
+        var fill = d3.scale.category20();
 
         var vis = d3.select("#viz_graph_author")
           .append("svg:svg")
-            .attr("width", w)
-            .attr("height", h)
-            .attr("transform", "translate(" + -100 + "," + -45 + ")");
+          .attr("width", width)
+          .attr("height", height)
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         json = response;  
 
@@ -250,11 +251,15 @@
 
         var force = d3.layout.force()
             .charge(-200)
-            .linkDistance(40)
+            .linkDistance(40) 
             .nodes(json.nodes)
             .links(json.links)
-            .size([w, h])
+            .size([Math.ceil(0.25*width), Math.ceil(height)])
             .start();
+
+            // .gravity(0.6)
+            // .friction(0.5)
+            // .theta(0.4)
 
         var link = vis.selectAll("line.link")
             .data(json.links)
@@ -274,7 +279,7 @@
           node.append("svg:circle")
             .attr("r", 3)
               .style("fill", function(d) { return fill(d.group); })
-          .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));;
+          .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));
             //.call(force.drag);
 
        var linkedByIndex = {};
