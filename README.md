@@ -25,9 +25,12 @@ ToDo
 	- [x] multiple names is not intuitive
 		- figure out how to only get Eward witten
 		- would it be better to swtich the names to not be "lastname, firstname"?
-- SH
+	- [ ] align svg's in each viz
+	- [ ] figure out a way to handle the author nework graph
 	- [ ] subject mapping
-    - [ ] subject chart
+
+- SH
+    - [x] subject chart
     	- what do the different color mean?
     	- can we figure out how to stuff more words into each bubble
     	and how to shut off words if the size is too small
@@ -39,11 +42,11 @@ ToDo
 	- [x] remove \r characters from subject names
 	- [x] Insert space in subject names if needed
 	- [not necc] normalization
+	- [ ] word cloud
 
 - [ ] sometimes the word "and" is in the author page -- need to remove this 
 - [ ] apply a power function to collaboration graph such that the increase edge weight is magnified
 - [ ] put limits on search based on either a top X or by paper count (i.e.\ importance)
-- [ ] remove \r from subjects
 - [ ] find all msc codes
 - [ ] build out visualizations
 	- [x] trends
@@ -95,15 +98,15 @@ Database Schema (bold fields are primary keys)
 	- __paper_id__ [VARCHAR(50)]
 	- title [TEXT]
 	- dt_created [DATE]
-	- __set_spec__ [VARCHAR(50)]
+	- set_spec [VARCHAR(50)]
 	- description [TEXT]
 - authors
 	- __paper_id__ [VARCHAR(50)]
-	- __set_spec__ [VARCHAR(50)]
+	- set_spec [VARCHAR(50)]
 	- __author_id__ [VARCHAR(50)]
 - subjects
 	- __paper_id__ [VARCHAR(50)]
-	- __set_spec__ [VARCHAR(50)]
+	- set_spec [VARCHAR(50)]
 	- __subject_name__ [VARCHAR(50)]
 
 
