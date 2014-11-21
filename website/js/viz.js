@@ -219,6 +219,16 @@
 
     function author_network_viz(response, width, height) { 
 
+      var zoom = d3.behavior.zoom()
+        .scaleExtent([0.001, 10])
+        .on("zoom", zoomed);
+
+      var drag = d3.behavior.drag()
+          .origin(function(d) { return d; })
+          .on("dragstart", dragstarted)
+          .on("drag", dragged)
+          .on("dragend", dragended);
+
       var min_dim = Math.min(width,height);
       var max_dim = Math.max(width,height);
 
@@ -229,13 +239,22 @@
           width = width,
           height = height;
 
-        var fill = d3.scale.category20();
+      var fill = d3.scale.category20();
 
-        var vis = d3.select("#viz_graph_author")
-          .append("svg:svg")
+      var svg = d3.select("#viz_graph_author")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(zoom);
+
+      var rect = svg.append("rect")
           .attr("width", width)
           .attr("height", height)
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          .style("fill", "none")
+          .style("pointer-events", "all");
+
+      var container = svg.append("g");
 
         json = response;  
 
@@ -261,7 +280,7 @@
             // .friction(0.5)
             // .theta(0.4)
 
-        var link = vis.selectAll("line.link")
+        var link = container.selectAll("line.link")
             .data(json.links)
             .enter().append("svg:line")
             .attr("class", "link")
@@ -271,7 +290,7 @@
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
 
-        var node = vis.selectAll("g.node")
+        var node = container.selectAll("g.node")
             .data(json.nodes)
             .enter().append("svg:g")
             .attr("class", "node")
@@ -314,7 +333,7 @@
         node.append("svg:title")
           .text(function(d) { return d.name; });
 
-        vis.style("opacity", 1e-6)
+        container.style("opacity", 1e-6)
           .transition()
             .duration(1000)
             .style("opacity", 1);
@@ -327,6 +346,26 @@
           
           node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
         });
+
+
+        function zoomed() {
+          container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        }
+
+        function dragstarted(d) {
+          d3.event.sourceEvent.stopPropagation();
+          d3.select(this).classed("dragging", true);
+        }
+
+        function dragged(d) {
+          d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+        }
+
+        function dragended(d) {
+          d3.select(this).classed("dragging", false);
+        }
+
+
 
     };
 
