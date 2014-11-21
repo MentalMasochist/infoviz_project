@@ -25,8 +25,8 @@ ToDo
 	- [x] multiple names is not intuitive
 		- figure out how to only get Eward witten
 		- would it be better to swtich the names to not be "lastname, firstname"?
-	- [ ] align svg's in each viz
-	- [ ] figure out a way to handle the author nework graph
+	- [x] align svg's in each viz
+	- [x] figure out a way to handle the author nework graph
 	- [ ] subject mapping
 
 - SH
@@ -44,6 +44,11 @@ ToDo
 	- [not necc] normalization
 	- [ ] word cloud
 
+- [ ] add thresholds to query
+- [ ] check what search can be done with subject
+- [ ] need to handle edge cases
+	- [ ] when there are no results found
+	- [ ] starting search
 - [ ] sometimes the word "and" is in the author page -- need to remove this 
 - [ ] apply a power function to collaboration graph such that the increase edge weight is magnified
 - [ ] put limits on search based on either a top X or by paper count (i.e.\ importance)
