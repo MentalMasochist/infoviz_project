@@ -1,4 +1,7 @@
+
+
     $(document).ready( function() {
+
       // variable to hold request
       var request;
       
@@ -55,21 +58,50 @@
       });
   
     function main_viz(response) {
-      d3.select("#viz_trend").select("svg").remove()
-      d3.select("#viz_graph_subject").select("svg").remove()
-      d3.select("#viz_graph_author").select("svg").remove()
-      trend_viz(response['trending_data']);
-      author_network_viz(response['author_data']);
-      subject_network_viz(response['subject_data']);
+      
+      d3.select("#viz_trend").select("svg").remove();
+      d3.select("#viz_graph_subject").select("svg").remove();
+      d3.select("#viz_graph_author").select("svg").remove();
+      
+      var id = 'viz_trend';
+      var dim = get_dim(id),
+          width = dim[0],
+          height = dim[1];
+
+      trend_viz(response['trending_data'], width, height);
+      
+      var id = 'viz_graph_subject';
+      var dim = get_dim(id),
+          width = dim[0],
+          height = dim[1];
+
+      author_network_viz(response['author_data'], width, height);
+
+      var id = 'viz_graph_author';
+      var dim = get_dim(id),
+          width = dim[0],
+          height = dim[1];
+      
+      subject_network_viz(response['subject_data'], width, height);
+
+
       // word_cloud_viz(data);  // to be competed in latter stages
       // extra_viz(data); // to be competed in latter stages
     };
 
-    function trend_viz(response) {
+    function get_dim(id) {
+      var w = window, d = document, e = d.documentElement,
+          g = d.getElementById(id),
+          width = Math.min(w.innerWidth, e.clientWidth, g.clientWidth),
+          height = Math.min(w.innerHeight, e.clientHeight, g.clientHeight);
+      return [width,height];
+    };
+
+    function trend_viz(response, width, height) {
 
       var margin = {top: 20, right: 50, bottom: 30, left: 70},
-          width = 1125 - margin.left - margin.right,
-          height = 270 - margin.top - margin.bottom;
+          width = width - margin.left - margin.right,
+          height = height - margin.top - margin.bottom;
 
       // var parseDate = d3.time.format("%d-%b-%y").parse;
       var parseDate = d3.time.format("%Y-%d").parse;
@@ -134,9 +166,20 @@
             .attr("d", line);
       };
 
-    function subject_network_viz(response) {
+    function subject_network_viz(response, width, height) {
 
-    var diameter = 200,
+    var min_dim = Math.min(width,height);
+    var max_dim = Math.max(width,height);
+
+    var margin = {top: Math.ceil(0.01*height) + Math.ceil(Math.max(height-width,0)/2), 
+                  right: Math.ceil(0.01*width), 
+                  bottom: Math.ceil(0.01*height), 
+                  left: Math.ceil(0.01*width) + Math.ceil(Math.max(width-height,0)/2)},
+        width = width,
+        height = height;
+
+    // var diameter = 200,
+    var diameter = min_dim - Math.ceil(min_dim*0.01)*2,
     format = d3.format(",d"),
     color = d3.scale.category20c();
 
@@ -146,9 +189,10 @@
       .padding(1.5);
 
     var svg = d3.select("#viz_graph_subject").append("svg")
-      .attr("width", diameter)
-      .attr("height", diameter)
-      .attr("class", "bubble");
+      .attr("width", width)
+      .attr("height", height)
+      .attr("class", "bubble")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var node = svg.selectAll(".node")
       .data(bubble.nodes(processData(response))
@@ -181,7 +225,7 @@
 
     };
 
-    function author_network_viz(response) { 
+    function author_network_viz(response, width, height) { 
         var w = 500,
             h = 334,
             fill = d3.scale.category20();
