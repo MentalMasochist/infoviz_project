@@ -38,9 +38,15 @@ $server = mysql_connect($dbhost, $dbuser, $dbpass);
 $conn = mysql_select_db($database, $server);
 
 // define variables
+$thres_subjects = 0;
+$thres_authors = 0;
+
 $form_subjects = $_POST["subjects"];
 $form_authors = $_POST["authors"];
 $form_papers = $_POST["keywords"];
+$thres_subjects = $_POST["thres_subject"];
+$thres_authors = $_POST["thres_author"];
+
 $query_subjects = "";
 $query_authors = "";
 $query_papers = "";
@@ -243,6 +249,7 @@ $query = " SELECT count(subject_name) AS count_sub, subject_name ".
 "     INNER JOIN active_papers ap                       ".
 "         ON ap.paper_id = s.paper_id                   ".
 "     GROUP BY s.subject_name                           ".
+"     HAVING count(subject_name) >= ".$thres_subjects."  	".
 "     ORDER BY count_sub DESC;                          ";
 
 
@@ -283,7 +290,7 @@ $query = " INSERT INTO active_authors (name, nodeSize)                  ".
          "     INNER JOIN active_papers ap                              ".
          "     ON ap.paper_id = a.paper_id                              ".
          "     GROUP BY a.author_name                                   ".
-         "     HAVING count(ap.paper_id) >= 0                           ".
+         "     HAVING count(ap.paper_id) >= ".$thres_authors."          ".
          "     ORDER BY count(ap.paper_id) DESC;                        ";
 
 if ($debug) {
@@ -347,6 +354,7 @@ $query = " SELECT aa1.id AS source, aa2.id AS target, count(ap.paper_id) as valu
          "         ON aa1.name = a1.author_name                                     ".
          "     LEFT JOIN  active_authors_2 aa2                                      ".
          "         ON aa2.name = a2.author_name                                     ".
+         "     WHERE  aa1.id is not NULL AND aa2.id is not NULL                     ".
          "     GROUP BY a1.author_name, a2.author_name;                             ";
 $viz_ret_4 = f_mysql_query($query);
 if ($debug) {

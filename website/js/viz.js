@@ -69,6 +69,13 @@
           height = dim[1];
 
       trend_viz(response['trending_data'], width, height);
+     
+      var id = 'viz_graph_author';
+      var dim = get_dim(id),
+          width = dim[0],
+          height = dim[1];
+      
+      subject_network_viz(response['subject_data'], width, height);
       
       var id = 'viz_graph_subject';
       var dim = get_dim(id),
@@ -76,14 +83,6 @@
           height = dim[1];
 
       author_network_viz(response['author_data'], width, height);
-
-      var id = 'viz_graph_author';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
-      
-      subject_network_viz(response['subject_data'], width, height);
-
 
       // word_cloud_viz(data);  // to be competed in latter stages
       // extra_viz(data); // to be competed in latter stages

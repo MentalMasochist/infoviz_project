@@ -149,25 +149,6 @@ FROM keywords;
 
 
 ------------------------------
--- TEST QUERIES --------------
-------------------------------
-
---
-SELECT dt_created, count(dt_created) FROM papers
-    WHERE MATCH (title, description) 
-    AGAINST ('+tomorrow' IN BOOLEAN MODE)
-    GROUP BY dt_created;
-
---
-SELECT paper_id FROM authors
-    WHERE CONTAINS (author_name, '"roughgarden*"');
-
---
-SELECT COUNT(*), paper_id, set_spec FROM authors
-    WHERE MATCH (author_name) AGAINST ('roughgarden' IN BOOLEAN MODE)
-    GROUP BY paper_id;
-
-------------------------------
 -- QUERIES USED --------------
 ------------------------------
 
@@ -191,7 +172,7 @@ DROP TABLE IF EXISTS temp_authors;
 CREATE TEMPORARY TABLE temp_authors AS (
 SELECT a.paper_id
     FROM authors a
-    WHERE MATCH (a.author_name) AGAINST ('Boyan' IN BOOLEAN MODE)
+    WHERE MATCH (a.author_name) AGAINST ('Trimm' IN BOOLEAN MODE)
     GROUP BY a.paper_id
     HAVING count(a.paper_id) = 1
 );
@@ -227,21 +208,21 @@ SELECT DISTINCT tp.paper_id
 -- 
 
 -- TREND GRAPH
--- by year-month
-SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
-    FROM (
-        SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
-            FROM papers p 
-            INNER JOIN active_papers ap 
-                ON p.paper_id = ap.paper_id 
-                GROUP BY year(dt_created), month(dt_created)
-        ) selected 
-    RIGHT JOIN (
-        SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
-            FROM papers 
-            GROUP BY year(dt_created), month(dt_created)) total 
-    ON selected.date = total.date
-    WHERE total.date > 1900;
+-- -- by year-month
+-- SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
+--     FROM (
+--         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
+--             FROM papers p 
+--             INNER JOIN active_papers ap 
+--                 ON p.paper_id = ap.paper_id 
+--                 GROUP BY year(dt_created), month(dt_created)
+--         ) selected 
+--     RIGHT JOIN (
+--         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
+--             FROM papers 
+--             GROUP BY year(dt_created), month(dt_created)) total 
+--     ON selected.date = total.date
+--     WHERE total.date > 1900;
 
 -- by year
 SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
@@ -265,6 +246,7 @@ SELECT count(subject_name) AS count_sub, subject_name
     INNER JOIN active_papers ap 
         ON ap.paper_id = s.paper_id 
     GROUP BY s.subject_name
+    HAVING count(subject_name) >= 0
     ORDER BY count_sub DESC;
 
 
@@ -288,6 +270,7 @@ SELECT a.author_name AS name, count(ap.paper_id) as nodeSize
 SELECT 0 as "group", name, nodeSize
     FROM active_authors;
 
+DROP TABLE IF EXISTS active_authors_2;
 CREATE TABLE active_authors_2 LIKE active_authors; 
 INSERT active_authors_2 SELECT * FROM active_authors;
 
@@ -302,8 +285,8 @@ SELECT aa1.id AS source, aa2.id AS target, count(ap.paper_id) as value
         ON aa1.name = a1.author_name
     LEFT JOIN  active_authors_2 aa2
         ON aa2.name = a2.author_name   
+    WHERE  aa1.id is not NULL AND aa2.id is not NULL 
     GROUP BY a1.author_name, a2.author_name;
-
 
 ------------------------------
 -- SANITY CHECKS -------------
@@ -454,64 +437,4 @@ SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10
     ON selected.date = total.date
     WHERE total.date > 1900;
 
-
--- -- 5
--- -- Testing Author collab
--- -- should have three fields, each with a edge weight of 3
--- --
-
--- authors temp table
-DROP TABLE IF EXISTS temp_authors;
-CREATE TEMPORARY TABLE temp_authors AS (
-SELECT a.paper_id
-    FROM authors a
-    WHERE MATCH (a.author_name) AGAINST ('Trimm' IN BOOLEAN MODE)
-    GROUP BY a.paper_id
-    HAVING count(a.paper_id) = 1
-);
-
--- combine temporary tables into an active table set
-DROP TABLE IF EXISTS active_papers;
-CREATE TEMPORARY TABLE active_papers AS (
-SELECT DISTINCT tp.paper_id
-    FROM papers tp
-    INNER JOIN temp_authors ta 
-    ON ta.paper_id = tp.paper_id
-    INNER JOIN subjects ts 
-    ON ts.paper_id = tp.paper_id
-);
-
-DROP TABLE IF EXISTS active_authors;
-CREATE TEMPORARY TABLE active_authors (
-    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    nodeSize INTEGER NOT NULL  
-    );
-
-INSERT INTO active_authors (name, nodeSize)
-SELECT a.author_name AS name, count(ap.paper_id) as nodeSize
-    FROM authors a
-    INNER JOIN active_papers ap
-    ON ap.paper_id = a.paper_id
-    GROUP BY a.author_name
-    HAVING count(ap.paper_id) >= 0
-    ORDER BY count(ap.paper_id) DESC;
-
-SELECT 0 as "group", name, nodeSize
-    FROM active_authors;
-
-CREATE TABLE active_authors_2 LIKE active_authors; 
-INSERT active_authors_2 SELECT * FROM active_authors;
-
-SELECT aa1.id AS source, aa2.id AS target, count(ap.paper_id) as value 
-    FROM authors a1 
-    INNER JOIN active_papers ap 
-        ON ap.paper_id = a1.paper_id 
-    INNER JOIN authors a2
-        ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name
-    LEFT JOIN active_authors aa1
-        ON aa1.name = a1.author_name
-    LEFT JOIN  active_authors_2 aa2
-        ON aa2.name = a2.author_name   
-    GROUP BY a1.author_name, a2.author_name;
 
