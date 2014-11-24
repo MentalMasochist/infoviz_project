@@ -438,3 +438,62 @@ SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10
     WHERE total.date > 1900;
 
 
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+--- OVERVIEW QUERIES -----------------------------------------------
+--- data to show when the website is first shown -------------------
+--------------------------------------------------------------------
+
+
+-- trend chart
+-- shows the count of submitted papers for each year
+SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-01') AS date 
+    FROM papers p 
+    WHERE year(dt_created) >= 1992
+    GROUP BY year(dt_created);
+
+-- subject chart
+-- shows the most contributed subjects
+SELECT count(subject_name) AS count_sub, subject_name 
+    FROM subjects s 
+    GROUP BY s.subject_name
+    ORDER BY count_sub DESC
+    LIMIT 50;
+
+
+-- AUTHOR COLLOBORATION
+-- shows the most contributed authors
+-- in progress...
+DROP TABLE IF EXISTS active_authors;
+CREATE TEMPORARY TABLE active_authors (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    nodeSize INTEGER NOT NULL  
+    );
+
+INSERT INTO active_authors (name, nodeSize)
+SELECT a.author_name AS name, count(a.paper_id) as nodeSize
+    FROM authors a
+    GROUP BY a.author_name
+    HAVING count(a.paper_id) >= 0
+    ORDER BY count(a.paper_id) DESC
+    LIMIT 50;
+
+SELECT 0 as "group", name, nodeSize
+    FROM active_authors;
+
+DROP TABLE IF EXISTS active_authors_2;
+CREATE TABLE active_authors_2 LIKE active_authors; 
+INSERT active_authors_2 SELECT * FROM active_authors;
+
+-- AUTHOR COLLOBORATION
+SELECT aa1.id AS source, aa2.id AS target, count(a1.paper_id) as value 
+    FROM authors a1 
+    INNER JOIN authors a2
+        ON a1.paper_id = a2.paper_id AND a1.author_name < a2.author_name
+    LEFT JOIN active_authors aa1
+        ON aa1.name = a1.author_name
+    LEFT JOIN  active_authors_2 aa2
+        ON aa2.name = a2.author_name   
+    WHERE  aa1.id is not NULL AND aa2.id is not NULL 
+    GROUP BY a1.author_name, a2.author_name;
