@@ -161,59 +161,59 @@
 
     function subject_network_viz(response, width, height) {
 
-    var min_dim = Math.min(width,height);
-    var max_dim = Math.max(width,height);
+      var min_dim = Math.min(width,height);
+      var max_dim = Math.max(width,height);
 
-    var margin = {top: Math.ceil(0.01*height) + Math.ceil(Math.max(height-width,0)/2), 
-                  right: Math.ceil(0.01*width), 
-                  bottom: Math.ceil(0.01*height), 
-                  left: Math.ceil(0.01*width) + Math.ceil(Math.max(width-height,0)/2)},
-        width = width,
-        height = height;
+      var margin = {top: Math.ceil(0.01*height) + Math.ceil(Math.max(height-width,0)/2), 
+                    right: Math.ceil(0.01*width), 
+                    bottom: Math.ceil(0.01*height), 
+                    left: Math.ceil(0.01*width) + Math.ceil(Math.max(width-height,0)/2)},
+          width = width,
+          height = height;
 
-    // var diameter = 200,
-    var diameter = min_dim - Math.ceil(min_dim*0.01)*2,
-    format = d3.format(",d"),
-    color = d3.scale.category20c();
+      // var diameter = 200,
+      var diameter = min_dim - Math.ceil(min_dim*0.01)*2,
+      format = d3.format(",d"),
+      color = d3.scale.category20c();
 
-    var bubble = d3.layout.pack()
-      .sort(null)
-      .size([diameter, diameter])
-      .padding(1.5);
+      var bubble = d3.layout.pack()
+        .sort(null)
+        .size([diameter, diameter])
+        .padding(1.5);
 
-    var svg = d3.select("#viz_graph_subject").append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("class", "bubble")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var svg = d3.select("#viz_graph_subject").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "bubble")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var node = svg.selectAll(".node")
-      .data(bubble.nodes(processData(response))
-      .filter(function(d) { return !d.children; }))
-      .enter().append("g")
-      .attr("class", "node")  
-      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      var node = svg.selectAll(".node")
+        .data(bubble.nodes(processData(response))
+        .filter(function(d) { return !d.children; }))
+        .enter().append("g")
+        .attr("class", "node")  
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-    node.append("title")
-      .text(function(d) { return d.className + ": " + format(d.value); });
+      node.append("title")
+        .text(function(d) { return d.className + ": " + format(d.value); });
 
-    node.append("circle")
-      .attr("r", function(d) { return d.r; })
-      .style("fill", function(d) { return color(d.packageName); });
+      node.append("circle")
+        .attr("r", function(d) { return d.r; })
+        .style("fill", function(d) { return color(d.packageName); });
 
-    node.append("text")
-      .attr("dy", ".3em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.className.substring(0, d.r / 3); });
+      node.append("text")
+        .attr("dy", ".3em")
+        .style("text-anchor", "middle")
+        .text(function(d) { return d.className.substring(0, d.r / 3); });
 
-    function processData(response) {
-      var classes = [];
-      response.forEach(function (d){
-          classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
-        }
-      );
-        return {children: classes};
-    }  
+      function processData(response) {
+        var classes = [];
+        response.forEach(function (d){
+            classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
+          }
+        );
+          return {children: classes};
+      }  
     };
 
     function author_network_viz(response, width, height) { 
@@ -363,12 +363,7 @@
         function dragended(d) {
           d3.select(this).classed("dragging", false);
         }
-
-
-
     };
-
-
 
 
     function word_cloud_viz(data) {
