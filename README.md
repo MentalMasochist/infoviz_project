@@ -51,6 +51,10 @@ ToDo
 	- [not necc] normalization
 	- [ ] word cloud
 
+- [ ] is there a way to multi-thread the queries on the php side? (I know you cant do this inside mysql for the engines present)
+- [ ] need a time-out warning (need to start producing coded errors: i.e. return 999 for timeout)
+- [ ] have normalization be an option
+	- normalization makes sense on a large search basis, but not for looking at individuals (this will most surely always go down)
 - [ ] figure out how to stop mysql on refresh (I have to do this with terminal now if I kill a query) 
 - [ ] split visualizations and queries such that each viz loads when the data is ready (not sure if this is possible or if will cause a lot of extra work)
 - [ ] sometimes the word "and" is in the author page -- need to remove this 
