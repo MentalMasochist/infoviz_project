@@ -1,63 +1,11 @@
-
-
     $(document).ready( function() {
 
-      // variable to hold request
-      var request;
-      
-      $("#form_menu").submit(function(event){
 
+    overview_main_viz();
 
-        if (request) {
-          request.abort();
-        }
+    });
 
-        var $form = $(this);
-    
-        // let's select and cache all the fields
-        var $inputs = $form.find("input, select, button, textarea");
-
-        var serializedData = $form.serialize();
-
-        $inputs.prop("disabled", true);
-
-        // fire off the request to /form.php
-        request = $.ajax({
-            url: "query.php",
-            type: "post",
-            data: serializedData,
-            dataType: "JSON"
-        });
-
-        var ret;
-        // callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){
-            // log a message to the console
-            main_viz(response);
-        });
-
-        // callback handler that will be called on failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
-            // log the error to the console
-            console.error(
-                "The following error occured: "+
-                textStatus, errorThrown
-            );
-        });
-
-        // callback handler that will be called regardless
-        // if the request failed or succeeded
-        request.always(function () {
-            // reenable the inputs
-            $inputs.prop("disabled", false);
-        });
-        // prevent default posting of form
-        event.preventDefault();
-
-        });
-      });
-  
-    function main_viz(response) {
+    function overview_main_viz() {
       
       d3.select("#viz_trend").select("svg").remove();
       d3.select("#viz_graph_subject").select("svg").remove();
@@ -67,22 +15,20 @@
       var dim = get_dim(id),
           width = dim[0],
           height = dim[1];
-
-      trend_viz(response['trending_data'], width, height);
+      ov_trend_viz(width, height);
      
+      var id = 'viz_graph_subject';
+      var dim = get_dim(id),
+          width = dim[0],
+          height = dim[1];      
+      ov_subject_network_viz(width, height);
+
       var id = 'viz_graph_author';
       var dim = get_dim(id),
           width = dim[0],
           height = dim[1];
+      ov_author_network_viz(width, height);
       
-      subject_network_viz(response['subject_data'], width, height);
-      
-      var id = 'viz_graph_subject';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
-
-      author_network_viz(response['author_data'], width, height);
 
       // word_cloud_viz(data);  // to be competed in latter stages
       // extra_viz(data); // to be competed in latter stages
@@ -96,8 +42,8 @@
       return [width,height];
     };
 
-    function trend_viz(response, width, height) {
-
+    function ov_trend_viz(width, height) {
+      
       var margin = {top: 20, right: 50, bottom: 30, left: 70},
           width = width - margin.left - margin.right,
           height = height - margin.top - margin.bottom;
@@ -121,7 +67,7 @@
 
       var line = d3.svg.line()
           .x(function(d) { return x(d.date); })
-          .y(function(d) { return y(d.freq); });
+          .y(function(d) { return y(d.paper_count); });
 
       var svg = d3.select("#viz_trend").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -129,14 +75,16 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        root = response;
-        root.forEach(function(d) {
+        // start data read function
+      d3.json("js/overview_papers.json", function(error, data) {
+        
+        data.forEach(function(d) {
           d.date = parseDate(d.date);
-          d.freq = +d.freq;
+          d.paper_count = +d.paper_count;
         });
 
-        x.domain(d3.extent(root, function(d) { return d.date; }));
-        y.domain(d3.extent(root, function(d) { return d.freq; }));
+        x.domain(d3.extent(data, function(d) { return d.date; }));
+        y.domain(d3.extent(data, function(d) { return d.paper_count;}));
 
         svg.append("g")
             .attr("class", "x axis")
@@ -151,15 +99,17 @@
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Frequency");
+            .text("Annual Submissions");
 
         svg.append("path")
-            .datum(root)
+            .datum(data)
             .attr("class", "line")
             .attr("d", line);
+      // end function
+        });
       };
 
-    function subject_network_viz(response, width, height) {
+    function ov_subject_network_viz(width, height) {
 
       var min_dim = Math.min(width,height);
       var max_dim = Math.max(width,height);
@@ -181,42 +131,46 @@
         .size([diameter, diameter])
         .padding(1.5);
 
+      console.log(margin.left, margin.top);
+
       var svg = d3.select("#viz_graph_subject").append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("class", "bubble")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var node = svg.selectAll(".node")
-        .data(bubble.nodes(processData(response))
-        .filter(function(d) { return !d.children; }))
-        .enter().append("g")
-        .attr("class", "node")  
-        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      d3.json("js/overview_subjects.json", function(error, data) {
+        var node = svg.selectAll(".node")
+          .data(bubble.nodes(processData(data))
+          .filter(function(d) { return !d.children; }))
+          .enter().append("g")
+          .attr("class", "node")  
+          .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-      node.append("title")
-        .text(function(d) { return d.className + ": " + format(d.value); });
+        node.append("title")
+          .text(function(d) { return d.className + ": " + format(d.value); });
 
-      node.append("circle")
-        .attr("r", function(d) { return d.r; })
-        .style("fill", function(d) { return color(d.packageName); });
+        node.append("circle")
+          .attr("r", function(d) { return d.r; })
+          .style("fill", function(d) { return color(d.packageName); });
 
-      node.append("text")
-        .attr("dy", ".3em")
-        .style("text-anchor", "middle")
-        .text(function(d) { return d.className.substring(0, d.r / 3); });
+        node.append("text")
+          .attr("dy", ".3em")
+          .style("text-anchor", "middle")
+          .text(function(d) { return d.className.substring(0, d.r / 3); });
 
-      function processData(response) {
-        var classes = [];
-        response.forEach(function (d){
-            classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
-          }
-        );
-          return {children: classes};
-      }  
+        function processData(data) {
+          var classes = [];
+          data.forEach(function (d){
+              classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
+            }
+          );
+            return {children: classes};
+        }  
+      });
     };
 
-    function author_network_viz(response, width, height) { 
+    function ov_author_network_viz(width, height) { 
 
       var zoom = d3.behavior.zoom()
         .scaleExtent([0.001, 10])
@@ -255,16 +209,16 @@
 
       var container = svg.append("g");
 
-        json = response;  
+      // start data function
+      d3.json("js/overview_authors.json", function(error, json) {
 
         json.links.forEach(function(d) {
           d['source'] = (+d['source']) -1;
-          d['target'] = (+d['target']) -1;
           d['value'] = +d['value'];
         });
 
         json.nodes.forEach(function(d) {
-          d['nodeSize'] = +d['nodeSize'];
+          d['nodeSize'] = +1;
         });
 
         var force = d3.layout.force()
@@ -300,28 +254,29 @@
           .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));
             //.call(force.drag);
 
-       var linkedByIndex = {};
-          json.links.forEach(function(d) {
-              linkedByIndex[d.source.index + "," + d.target.index] = 1;
-          });
+        var linkedByIndex = {};
+         
+        json.links.forEach(function(d) {
+            linkedByIndex[d.source.index + "," + d.target.index] = 1;
+        });
 
-          function isConnected(a, b) {
-              return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
-          }
+        function isConnected(a, b) {
+            return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+        }
 
-          function fade(opacity) {
-              return function(d) {
-                  node.style("stroke-opacity", function(o) {
-                      thisOpacity = isConnected(d, o) ? 1 : opacity;
-                      this.setAttribute('fill-opacity', thisOpacity);
-                      return thisOpacity;
-                  });
+        function fade(opacity) {
+            return function(d) {
+                node.style("stroke-opacity", function(o) {
+                    thisOpacity = isConnected(d, o) ? 1 : opacity;
+                    this.setAttribute('fill-opacity', thisOpacity);
+                    return thisOpacity;
+                });
 
-                  link.style("stroke-opacity", function(o) {
-                      return o.source === d || o.target === d ? 1 : opacity;
-                  });
-              };
-          }
+                link.style("stroke-opacity", function(o) {
+                    return o.source === d || o.target === d ? 1 : opacity;
+                });
+            };
+        }
           
         node.append("svg:text")
           .attr("class", "nodetext")
@@ -345,6 +300,7 @@
           
           node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
         });
+      });
 
 
         function zoomed() {
@@ -364,7 +320,6 @@
           d3.select(this).classed("dragging", false);
         }
     };
-
 
     function word_cloud_viz(data) {
       var sampleSVG = d3.select("#viz_word_cloud")

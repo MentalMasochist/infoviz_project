@@ -56,6 +56,8 @@ def create_db_files():
         wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
         for author in d_line['creator']:
+            if not any(c.isalpha() for c in author):
+                continue
             author_parts = author.split(',')
             if len(author_parts) == 2:
                 author_parts = author_parts

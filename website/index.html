@@ -8,16 +8,21 @@
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src='js/viz.js'></script>
+    <script src='js/overview_viz.js'></script>
 
   </head> 
   <style>  </style>
 
-  <body style="height:100%">
+  <body style="height:100%" onload="overview_main_viz()">
 
-    <div id="header">
-      <h1>arXiv connectivity visualization</h1>
+    <div id="header" style="text-align:center; vertical-align:middle">
+      <img src="img/cul_signature.gif" alt="cu_logo" style="max-height:100%; display: inline; vertical-align: middle; float:left;">
+      <h1 style="display: inline; float:center"> &nbsp arXiv.org connectivity visualization</h1>
+      <img src="img/gt_logo_white.png" alt="gt_logo" style="max-height:90%; display: inline;  float:right";>
     </div>  
   
+    <div id="trim">    </div>  
+
     <div id="viz_trend">
     </div>
 
@@ -25,9 +30,11 @@
       <!-- <form id="form_menu" method="post" action="query.php"> -->
       <form id="form_menu" method="post">
           Subjects: <input type="text" name="subjects" style="width:90%"> <br>
+          Subject Ct Threshold: <input type="number" name="thres_subject" min="0" value="0" style="width:35%"> <br>
           Authors: <input type="text" name="authors" style="width:90%"> <br>
+          Author Ct Threshold:  <input type="number" name="thres_author" min="0" value="0" style="width:36.5%"> <br>
           Keywords: <input type="text" name="keywords" style="width:90%"> <br>
-          <input type="submit" value="search_arXiv" align="left"> <br>
+          <input type="submit" value="search arXiv" align="left"> <br>
       </form>
     </div>  
 
