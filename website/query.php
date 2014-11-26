@@ -355,6 +355,16 @@ if ($debug) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
+$query =	" SELECT papers.description as desc 			".
+			"	from papers INNER JOIN active_papers ap 	".
+			"		ON papers.paper_id = ap.paper_id		";
+
+$viz_ret_5 = f_mysql_query($query);
+if ($debug) {
+	echo $viz_ret_5;
+	echo "<br /><br />";
+}
+
 
 
 // combining everthing together
@@ -362,9 +372,10 @@ $viz_ret_1 = json_decode($viz_ret_1, true);
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
 $viz_ret_4 = json_decode($viz_ret_4, true); 
+$viz_ret_5 = json_decode($viz_ret_5, true);
 
 
-$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => array('nodes' => $viz_ret_3, 'links' => $viz_ret_4));
+$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => array('nodes' => $viz_ret_3, 'links' => $viz_ret_4), 'word_cloud' => $viz_ret_5);
 echo json_encode($master_ret);
 
 mysql_close($conn);
