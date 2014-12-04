@@ -167,7 +167,7 @@
         } else {
           document.getElementById('subjects').value += ', ' + "\""+d.fullName+"\"";           
         }
-        //console.log(document.getElementById('subjects').value);
+        document.getElementById("search_arXiv_button").click();
       };
 
       function reset() {

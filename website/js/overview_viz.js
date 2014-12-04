@@ -111,7 +111,7 @@
 
     function ov_subject_network_viz(width, height) {
 
-      // settig colors
+      // setting colors
       var d_subjColor = new Array();
 
       d_subjColor["Astrophysics"] = "#1f77b4";
@@ -151,8 +151,6 @@
         .size([diameter, diameter])
         .padding(1.5);
 
-      console.log(margin.left, margin.top);
-
       var svg = d3.select("#viz_graph_subject").append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -165,6 +163,7 @@
           .filter(function(d) { return !d.children; }))
           .enter().append("g")
           .attr("class", "node")  
+		  .on("click", function(d){click(d)})
           .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
         node.append("title")
@@ -182,7 +181,7 @@
         function processData(data) {
           var classes = [];
           data.forEach(function (d){
-              classes.push({packageName: d.gen_subject_name, className: d.subject_name, value: d.count_sub});
+              classes.push({fullName: d.full_subject_name, packageName: d.gen_subject_name, className: d.subject_name, value: d.count_sub});
             }
           );
             return {children: classes};
@@ -225,6 +224,19 @@
             var text = d["key"];
             return text;
           });
+
+      function click(d) {
+        if (document.getElementById('subjects').value.length == 0) {
+          document.getElementById('subjects').value += ("\""+d.fullName+"\"");
+        } else {
+          document.getElementById('subjects').value += ', ' + "\""+d.fullName+"\"";           
+        }
+        document.getElementById("search_arXiv_button").click();
+      };
+
+      function reset() {
+        
+      }
 
       });
     };
