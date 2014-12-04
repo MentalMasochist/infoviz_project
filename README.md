@@ -15,8 +15,22 @@ Notes
 ToDo
 ----
 - RB
+	- [ ] we should change click-queries to double click functions
+	- [ ] do we need to limit the number o fauthors returned by the network graph
 	- [ ] size encoding for author graph
+	- [ ] querying 2 subjects doesn't seem to work appropriately
 	- [ ] handle when Null query is returned
+	- [ ] Add titles to graphs
+	- [ ] create paper for instructors
+	- [ ] see if you can click a button through javascript
+	- [ ] check what search can be done with subject
+	- [ ] need to handle edge cases
+		- [ ] when there are no results found
+		- [ ] opening webpage
+				- use some static data here
+	- [ ] graph titles
+	- [x] subject mapping
+	- [x] DB Query needs to use full name now 
 	- [x] Finish data build
 	- [x] Move SH queries to PHP
 	- [x] Get php to reurn multiple Query results
@@ -30,13 +44,6 @@ ToDo
 	- [x] align svg's in each viz
 	- [x] figure out a way to handle the author nework graph
 	- [x] add thresholds to query
-	- [ ] check what search can be done with subject
-	- [ ] need to handle edge cases
-		- [ ] when there are no results found
-		- [ ] opening webpage
-				- use some static data here
-	- [ ] graph titles
-	- [ ] subject mapping
 
 - SH
     - [x] subject chart
@@ -51,7 +58,7 @@ ToDo
 	- [x] remove \r characters from subject names
 	- [x] Insert space in subject names if needed
 	- [not necc] normalization
-	- [ ] word cloud
+	- [not going to do] word cloud
 
 - [ ] is there a way to multi-thread the queries on the php side? (I know you cant do this inside mysql for the engines present)
 - [ ] need a time-out warning (need to start producing coded errors: i.e. return 999 for timeout)
