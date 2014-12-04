@@ -163,9 +163,9 @@
 
       function click(d) {
         if (document.getElementById('subjects').value.length == 0) {
-          document.getElementById('subjects').value += ("\""+d.className+"\"");
+          document.getElementById('subjects').value += ("\""+d.fullName+"\"");
         } else {
-          document.getElementById('subjects').value += ', ' + "\""+d.className+"\"";           
+          document.getElementById('subjects').value += ', ' + "\""+d.fullName+"\"";           
         }
         //console.log(document.getElementById('subjects').value);
       };
@@ -245,7 +245,7 @@
       function processData(response) {
         var classes = [];
         response.forEach(function (d){
-            classes.push({packageName: d.gen_subject_name, className: d.subject_name, value: d.count_sub});
+            classes.push({fullName: d.full_subject_name, packageName: d.gen_subject_name, className: d.subject_name, value: d.count_sub});
           }
         );
           return {children: classes};
