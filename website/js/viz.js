@@ -161,7 +161,21 @@
 
     function subject_network_viz(response, width, height) {
 
-      // settig colors
+      function click(d) {
+        if (document.getElementById('subjects').value.length == 0) {
+          document.getElementById('subjects').value += ("\""+d.className+"\"");
+        } else {
+          document.getElementById('subjects').value += ', ' + "\""+d.className+"\"";           
+        }
+        //console.log(document.getElementById('subjects').value);
+      };
+
+      function reset() {
+        
+      }
+
+
+      // setting colors
       var d_subjColor = new Array();
 
       d_subjColor["Astrophysics"] = "#1f77b4";
@@ -212,6 +226,7 @@
         .filter(function(d) { return !d.children; }))
         .enter().append("g")
         .attr("class", "node")  
+        .on("click", function(d){click(d)})
         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
       node.append("title")
