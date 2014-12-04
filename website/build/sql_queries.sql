@@ -71,19 +71,21 @@ DROP TABLE IF EXISTS subjects;
 CREATE TABLE IF NOT EXISTS subjects (
     paper_id VARCHAR(150) NOT NULL,
     set_spec VARCHAR(40) NOT NULL,
+    full_subject_name VARCHAR(100) NOT NULL,
+    gen_subject_name VARCHAR(100) NOT NULL,
     subject_name VARCHAR(100) NOT NULL,
-    PRIMARY KEY (paper_id, subject_name),
+    PRIMARY KEY (paper_id, full_subject_name),
     CONSTRAINT FOREIGN KEY (paper_id) REFERENCES papers (paper_id)  
 )ENGINE=MYISAM;
 
 ALTER TABLE subjects
-    ADD FULLTEXT (subject_name);
+    ADD FULLTEXT (full_subject_name);
 
 LOAD DATA LOCAL INFILE 'proper_subjects.csv'
     INTO TABLE subjects
     FIELDS TERMINATED BY '\t'
     LINES TERMINATED BY '\n'
-    (paper_id, set_spec, subject_name); 
+    (paper_id, set_spec, full_subject_name, gen_subject_name, subject_name); 
 
 
 ------------------------------
@@ -126,14 +128,14 @@ LOAD DATA LOCAL INFILE 'proper_subjects.csv'
 ------------------------------
 
 -- all tables should have the same number of distinct paper ids
-SELECT COUNT(paper_id)
+SELECT COUNT(DISTINCT paper_id)
 FROM papers;
 
-SELECT COUNT(paper_id)
+SELECT COUNT(DISTINCT paper_id)
 FROM authors;
 
-SELECT COUNT(paper_id)
-FROM keywords;
+SELECT COUNT(DISTINCT paper_id)
+FROM subjects;
 
 --------------------
 -- making queries --
@@ -241,7 +243,7 @@ SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10
     WHERE total.date > 1900;
 
 -- SUBJECT GRAPH
-SELECT count(subject_name) AS count_sub, subject_name 
+SELECT count(subject_name) AS count_sub, gen_subject_name, subject_name 
     FROM subjects s 
     INNER JOIN active_papers ap 
         ON ap.paper_id = s.paper_id 
@@ -454,7 +456,7 @@ SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-01') AS dat
 
 -- subject chart
 -- shows the most contributed subjects
-SELECT count(subject_name) AS count_sub, subject_name 
+SELECT count(subject_name) AS count_sub, gen_subject_name, subject_name 
     FROM subjects s 
     GROUP BY s.subject_name
     ORDER BY count_sub DESC

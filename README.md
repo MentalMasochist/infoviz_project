@@ -15,6 +15,8 @@ Notes
 ToDo
 ----
 - RB
+	- [ ] size encoding for author graph
+	- [ ] handle when Null query is returned
 	- [x] Finish data build
 	- [x] Move SH queries to PHP
 	- [x] Get php to reurn multiple Query results

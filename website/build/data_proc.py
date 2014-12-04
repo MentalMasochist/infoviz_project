@@ -2,6 +2,7 @@ import glob
 import csv
 import ast
 import xml.etree.ElementTree as ET
+import re
 
 def move_all():
     raw_file_list = glob.glob('./raw_data/*.oai')
@@ -26,6 +27,13 @@ def move_all():
         fin.close()
 
 def create_db_files():
+    # subject handling
+    ls_singleton_sub = ['Quantum Physics','General Relativity and Quantum Cosmology','Mathematical Physics','Nuclear Theory']
+    ls_is_gen_sub = ['Astrophysics', 'Condensed Matter']
+    ls_primary_sub = ['Astrophysics', 'Computer Science', 'Condensed Matter', 
+                      'Database Applications', 'High Energy Physics', 'Mathematics', 
+                      'Nonlinear Sciences', 'Other', 'Physics', 'Quantitative Biology', 
+                      'Quantitative Finance', 'Statistics', 'math', 'msc', 'multi', 'physics.bio']
     # file names
     master_filename = "./raw_data/master.oai"
     db_papers_fname = "./raw_data/papers.csv"
@@ -70,31 +78,51 @@ def create_db_files():
                 print "strange commas for author: ", author  
             wtr_authors.writerow([paper_id, set_spec, author.encode('utf8')])
         # subjects table
-        for subject in d_line['subject']:
-            #print subject
-            try:
-                string = ''
-                prev = 0
-                sub = subject.encode('utf8')
-                flag = any(char.isdigit() for char in sub)
-                if flag is False:
-                    for i0, i in enumerate(sub):
-                        if i.isupper():
-                            if prev != 0:
-                                string += ' ' + sub[prev:i0]
-                            else:
-                                string += sub[prev:i0]
-                            prev = i0
-                    if prev != 0:
-                        string += ' '+sub[prev:len(sub)]
+        for ls_subject in d_line['subject']:
+            if ls_subject == None:
+                continue
+            for subject in ls_subject.split(','): 
+                try:
+                    string = ''
+                    prev = 0
+                    sub = subject.encode('utf8')
+                    flag = any(char.isdigit() for char in sub)
+                    if flag is False:
+                        for i0, i in enumerate(sub):
+                            if i.isupper():
+                                if prev != 0:
+                                    string += ' ' + sub[prev:i0]
+                                else:
+                                    string += sub[prev:i0]
+                                prev = i0
+                        if prev != 0:
+                            string += ' '+sub[prev:len(sub)]
+                        else:
+                            string += sub[prev:len(sub)]
+                        str_subject = string        
                     else:
-                        string += sub[prev:len(sub)]
-                    #print string
-                    wtr_subjects.writerow([paper_id, set_spec, string])
-                else:
-                    wtr_subjects.writerow([paper_id, set_spec, sub])
-            except:
-                print d_line['subject']
+                        str_subject = sub        
+                    # getting sub-subject, and subject
+                    str_subject = re.sub(' +',' ',subject).strip()
+                    full_subject = str_subject
+                    ls_sub = str_subject.split('-')
+                    if len(ls_sub) > 1:
+                        gen_subject = ls_sub[0].strip()
+                        if gen_subject not in ls_primary_sub:
+                            gen_subject = 'Other'
+                        else: 
+                            str_subject = ls_sub[-1].strip()
+                    else:
+                        if str_subject in ls_is_gen_sub:
+                            gen_subject = str_subject
+                        elif str_subject in ls_singleton_sub:
+                            gen_subject = 'Physics'
+                        else:
+                            gen_subject = 'Other'
+                    wtr_subjects.writerow([paper_id, set_spec, full_subject, gen_subject, str_subject])
+
+                except:
+                    print d_line['subject']
 
 
 if __name__ == "__main__":
