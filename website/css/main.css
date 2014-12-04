@@ -41,22 +41,22 @@ body {
 }
 
 #viz_graph_subject {
-	width: 28%;
+	width: 42%;
 	height: 55%;
 	background-color: #eee;
 	float: left;
 }
 
 #viz_graph_author {
-	width: 28%;
+	width: 42%;
 	height: 55%;
 	background-color: #eee;
 	float: left;
 }
 
 #viz_word_cloud {
-	width: 28%;
-	height: 55%;
+	width: 0%;
+	height: 0%;
 	background-color: #eee;
 	float: left;
 }
