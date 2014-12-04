@@ -162,14 +162,17 @@
     function subject_network_viz(response, width, height) {
 
       function click(d) {
-        console.log(d.className);
-        document.getElementById('subjects').value += ',' + d.className;
-        //console.log(document.getElementById('subjects').value);
-        };
-
-        function reset() {
-          
+        if (document.getElementById('subjects').value.length == 0) {
+          document.getElementById('subjects').value += ("\""+d.className+"\"");
+        } else {
+          document.getElementById('subjects').value += ', ' + "\""+d.className+"\"";           
         }
+        //console.log(document.getElementById('subjects').value);
+      };
+
+      function reset() {
+        
+      }
 
       var min_dim = Math.min(width,height);
       var max_dim = Math.max(width,height);
