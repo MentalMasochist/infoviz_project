@@ -161,6 +161,16 @@
 
     function subject_network_viz(response, width, height) {
 
+      function click(d) {
+        console.log(d.className);
+        document.getElementById('subjects').value += ',' + d.className;
+        //console.log(document.getElementById('subjects').value);
+        };
+
+        function reset() {
+          
+        }
+
       var min_dim = Math.min(width,height);
       var max_dim = Math.max(width,height);
 
@@ -192,6 +202,7 @@
         .filter(function(d) { return !d.children; }))
         .enter().append("g")
         .attr("class", "node")  
+        .on("click", function(d){click(d)})
         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
       node.append("title")
