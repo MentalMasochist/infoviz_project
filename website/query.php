@@ -244,13 +244,13 @@ if ($debug) {
 }
 
 // for subject graph
-$query = " SELECT count(subject_name) AS count_sub, subject_name ".
-"     FROM subjects s                                   ".
-"     INNER JOIN active_papers ap                       ".
-"         ON ap.paper_id = s.paper_id                   ".
-"     GROUP BY s.subject_name                           ".
-"     HAVING count(subject_name) >= ".$thres_subjects."  	".
-"     ORDER BY count_sub DESC;                          ";
+$query = " SELECT count(subject_name) AS count_sub, full_subject_name, gen_subject_name, subject_name ".
+"     FROM subjects s                                                             ".
+"     INNER JOIN active_papers ap                                                 ".
+"         ON ap.paper_id = s.paper_id                                             ".
+"     GROUP BY s.subject_name                                                     ".
+"     HAVING count(subject_name) >= ".$thres_subjects."  	                      ".
+"     ORDER BY count_sub DESC;                                                    ";
 
 
 $viz_ret_2 = f_mysql_query($query);
