@@ -11,6 +11,7 @@
     <script src='js/overview_viz.js'></script>
 
   </head> 
+  <style>  </style>
 
   <body style="height:100%" onload="overview_main_viz()">
 
@@ -28,13 +29,13 @@
     <div id="menu">
       <!-- <form id="form_menu" method="post" action="query.php"> -->
       <form id="form_menu" method="post">
-          Subjects: <input type="text" name="subjects" style="width:90%"> <br>
+          Subjects: <input type="text" name="subjects" style="width:90%" id="subjects"> <br>
           Subject Ct Threshold: <input type="number" name="thres_subject" min="0" value="0" style="width:35%"> <br>
           Authors: <input type="text" name="authors" style="width:90%"> <br>
           Author Ct Threshold:  <input type="number" name="thres_author" min="0" value="0" style="width:36.5%"> <br>
           Keywords: <input type="text" name="keywords" style="width:90%"> <br>
-          <input type="submit" value="search arXiv" align="left"> <br>
-      </form>
+          <input type="submit" value="search arXiv" align="left"> <input type="reset" value="clear" align="right"> <br>   
+      </form> 
     </div>  
 
     <div id="viz_graph_subject"></div>  
@@ -42,6 +43,7 @@
     <div id="viz_graph_author"></div>
 
     <div id="viz_word_cloud">
+      <h1>viz_word_cloud</h1> 
     </div>  
 
     <div id="extra">
