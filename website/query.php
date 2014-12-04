@@ -74,7 +74,7 @@ if (empty($form_subjects)) {
 	$query = " CREATE TEMPORARY TABLE temp_subjects AS (                                              ".
 			 " SELECT s.paper_id                                                                      ".
 			 "     FROM subjects s                                                                    ".
-			 "     WHERE MATCH (s.subject_name) AGAINST ('".trim($query_subjects)."' IN BOOLEAN MODE) ".
+			 "     WHERE MATCH (s.full_subject_name) AGAINST ('".trim($query_subjects)."' IN BOOLEAN MODE) ".
 			 "     GROUP BY s.paper_id                                                                ".
 			 "     HAVING count(s.paper_id) = ".$counter_subjects."                                   ".
 			 " );                                                                                     ";
