@@ -528,10 +528,12 @@ DROP TABLE IF EXISTS active_papers;
 CREATE TEMPORARY TABLE active_papers AS (
 SELECT DISTINCT tp.paper_id
     FROM papers tp
-    INNER JOIN temp_authors ta 
-    ON ta.paper_id = tp.paper_id
-    INNER JOIN subjects ts 
-    ON ts.paper_id = tp.paper_id
+    JOIN temp_authors ta 
+    JOIN subjects ts 
+    WHERE ta.paper_id = tp.paper_id
+    AND ts.paper_id = tp.paper_id
+    AND YEAR(tp.dt_created) >= 1994
+    AND YEAR(tp.dt_created) <= 2014
 );
 
 
@@ -540,22 +542,6 @@ SELECT DISTINCT tp.paper_id
 -- 
 
 -- TREND GRAPH
--- -- by year-month
--- SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
---     FROM (
---         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
---             FROM papers p 
---             INNER JOIN active_papers ap 
---                 ON p.paper_id = ap.paper_id 
---                 GROUP BY year(dt_created), month(dt_created)
---         ) selected 
---     RIGHT JOIN (
---         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
---             FROM papers 
---             GROUP BY year(dt_created), month(dt_created)) total 
---     ON selected.date = total.date
---     WHERE total.date > 1900;
-
 -- by year
 SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
     FROM (
