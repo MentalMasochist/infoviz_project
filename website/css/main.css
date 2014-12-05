@@ -29,6 +29,9 @@ body {
 #viz_trend {
 	width: 84%;
 	height: 35%;
+	background-image: url("trend-bg.png");
+	background-repeat: no-repeat;
+	background-position: 20% 5%;
 	background-color: #eee;
 	float: left;
 }
@@ -43,6 +46,9 @@ body {
 #viz_graph_subject {
 	width: 42%;
 	height: 55%;
+	background-image: url("subject-bg.png");
+	background-repeat: no-repeat;
+	background-position: 15% 100%;
 	background-color: #eee;
 	float: left;
 }
@@ -50,8 +56,12 @@ body {
 #viz_graph_author {
 	width: 42%;
 	height: 55%;
+	background-image: url("author-bg.png");
+	background-repeat: no-repeat;
+	background-position: 0% 0%;
 	background-color: #eee;
 	float: left;
+	box-shadow: 0 0 20px #c1c1c1 inset;
 }
 
 #viz_word_cloud {
