@@ -155,7 +155,7 @@ if (empty($form_papers)) {
 		$query_papers = $query_papers.' +'.trim($value);
 	}
 	$query = " CREATE TEMPORARY TABLE temp_papers AS (                                                    ".
-			 "     SELECT p.paper_id                                                                      ".
+			 "     SELECT p.paper_id, p.dt_created                                                                      ".
 			 "         FROM papers p                                                                      ".
 			 "         WHERE MATCH (p.title, p.description) AGAINST ('".trim($query_papers)."' IN BOOLEAN MODE) ".
 			 " );                                                                                         ";
