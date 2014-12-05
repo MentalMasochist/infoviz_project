@@ -94,6 +94,7 @@ def create_db_files():
             if ls_subject == None:
                 continue
             for subject in ls_subject.split(','): 
+                subject = subject.replace(".",":")
                 try:
                     string = ''
                     prev = 0
@@ -138,7 +139,7 @@ def create_db_files():
 
 
 if __name__ == "__main__":
-    move_all()
-    print "\nharvested files moved to master.oai\n"
+    # move_all()
+    # print "\nharvested files moved to master.oai\n"
     create_db_files()
     print "\ndb read csv files complete\n"
