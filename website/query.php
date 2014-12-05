@@ -30,7 +30,7 @@ function f_mysql_query($query) {
 // inputs
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = 'e5ye5ye5y';
+$dbpass = '';
 $database = 'arXiv_db';
 
 // connect to database
@@ -363,6 +363,18 @@ if ($debug) {
 }
 
 /////////////////////////////////////////////////////////////////////////////
+$query = 	"	SELECT papers.hyperlink AS link, papers.title AS title 	".
+			"		FROM papers 										".
+			"		INNER JOIN active_papers							".
+			"			ON papers.paper_id = active_papers.paper_id;	";
+
+$viz_ret_5 = f_mysql_query($query);
+if ($debug) {
+	echo $viz_ret_5;
+	echo "<br /><br />";
+}
+
+
 
 
 // combining everthing together
@@ -370,9 +382,9 @@ $viz_ret_1 = json_decode($viz_ret_1, true);
 $viz_ret_2 = json_decode($viz_ret_2, true); 
 $viz_ret_3 = json_decode($viz_ret_3, true); 
 $viz_ret_4 = json_decode($viz_ret_4, true); 
+$viz_ret_5 = json_decode($viz_ret_5, true);
 
-
-$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => array('nodes' => $viz_ret_3, 'links' => $viz_ret_4));
+$master_ret = array('trending_data' => $viz_ret_1, 'subject_data' => $viz_ret_2, 'author_data' => array('nodes' => $viz_ret_3, 'links' => $viz_ret_4), 'extra_viz_data' => $viz_ret_5);
 echo json_encode($master_ret);
 
 mysql_close($conn);
