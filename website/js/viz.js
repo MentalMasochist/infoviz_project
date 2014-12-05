@@ -325,7 +325,7 @@ $(document).ready( function() {
         .filter(function(d) { return !d.children; }))
         .enter().append("g")
         .attr("class", "node")  
-        .on("dblclick", function(d){click(d)})
+        .on("click", function(d){click(d)})
         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
       node.append("title")
@@ -476,7 +476,7 @@ $(document).ready( function() {
             .data(json.nodes)
             .enter().append("svg:g")
             .attr("class", "node")
-            .on("dblclick", function(d){click(d)})
+            .on("click", function(d){click(d)})
 
           node.append("svg:circle")
             .attr("r",  function(d) { return 1+Math.sqrt(d.nodeSize); })
