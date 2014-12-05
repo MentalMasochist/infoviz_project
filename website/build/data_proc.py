@@ -15,14 +15,20 @@ def move_all():
         fin = open(filename,'rb')        
         ct = 0 
         for line in fin:
+            #if ct % 2 == 0 and line[2:12] == 'identifier':
+                
             if ct % 2 == 0:
                 d_line = ast.literal_eval(line)
+                #print d_line['identifier']
+                #print d_line[2:12]
+
             else:
                 paperID = setSpec = line.split('</identifier>')[0].split('<identifier>')[-1]
                 d_line['paperID'] = paperID 
                 setSpec = line.split('</setSpec>')[0].split('<setSpec>')[-1]
                 d_line['setSpec'] = setSpec 
                 fout.writerow([str(d_line)])
+                #print d_line
             ct += 1
         fin.close()
 
@@ -54,6 +60,12 @@ def create_db_files():
         # conver to dict
         d_line = ast.literal_eval(line[0])
         # papers table
+        ind = d_line['identifier'][0].find(',')
+        if ind != -1:
+            hyperlink = d_line['identifier'][0][0:ind]
+        else:
+            hyperlink = d_line['identifier'][0]
+        #print hyperlink
         paper_id = d_line['paperID']
         title =  d_line['title'][0].replace('\n', ' ')
         title = title.replace('\r','')
@@ -61,7 +73,7 @@ def create_db_files():
         set_spec = d_line['setSpec']
         description = d_line['description'][0].replace('\n', ' ')
         description = description.replace('\r','')
-        wtr_papers.writerow([paper_id, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
+        wtr_papers.writerow([paper_id, hyperlink, title.encode('utf8'), dt_created, set_spec, description.encode('utf8')])
         # authors table
         for author in d_line['creator']:
             if not any(c.isalpha() for c in author):
@@ -126,7 +138,7 @@ def create_db_files():
 
 
 if __name__ == "__main__":
-    # move_all()
-    # print "\nharvested files moved to master.oai\n"
+    move_all()
+    print "\nharvested files moved to master.oai\n"
     create_db_files()
     print "\ndb read csv files complete\n"
