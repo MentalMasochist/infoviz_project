@@ -30,7 +30,8 @@ function f_mysql_query($query) {
 // inputs
 $dbhost = 'localhost';
 $dbuser = 'root';
-$dbpass = '';
+// $dbpass = '';
+$dbpass = 'e5ye5ye5y';
 $database = 'arXiv_db';
 
 // connect to database
@@ -249,8 +250,8 @@ $query = " SELECT count(subject_name) AS count_sub, full_subject_name, gen_subje
 "     INNER JOIN active_papers ap                                                 ".
 "         ON ap.paper_id = s.paper_id                                             ".
 "     GROUP BY s.subject_name                                                     ".
-"     HAVING count(subject_name) >= ".$thres_subjects."  	                      ".
-"     ORDER BY count_sub DESC;                                                    ";
+"     ORDER BY count_sub DESC                                                    ".
+"     LIMIT ".$thres_subjects.";                                                    ";
 
 
 $viz_ret_2 = f_mysql_query($query);
@@ -290,8 +291,8 @@ $query = " INSERT INTO active_authors (name, nodeSize)                  ".
          "     INNER JOIN active_papers ap                              ".
          "     ON ap.paper_id = a.paper_id                              ".
          "     GROUP BY a.author_name                                   ".
-         "     HAVING count(ap.paper_id) >= ".$thres_authors."          ".
-         "     ORDER BY count(ap.paper_id) DESC;                        ";
+         "     ORDER BY count(ap.paper_id) DESC                        ".
+         "     LIMIT ".$thres_authors.";                        ";
 
 if ($debug) {
 	echo $query;

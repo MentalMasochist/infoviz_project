@@ -249,8 +249,8 @@ SELECT count(subject_name) AS count_sub, gen_subject_name, subject_name
     INNER JOIN active_papers ap 
         ON ap.paper_id = s.paper_id 
     GROUP BY s.subject_name
-    HAVING count(subject_name) >= 0
-    ORDER BY count_sub DESC;
+    ORDER BY count_sub DESC
+    LIMIT 25;
 
 
 -- AUTHOR COLLOBORATION
@@ -267,8 +267,8 @@ SELECT a.author_name AS name, count(ap.paper_id) as nodeSize
     INNER JOIN active_papers ap
     ON ap.paper_id = a.paper_id
     GROUP BY a.author_name
-    HAVING count(ap.paper_id) >= 0
-    ORDER BY count(ap.paper_id) DESC;
+    ORDER BY count(ap.paper_id) DESC
+    LIMIT 25;
 
 SELECT 0 as "group", name, nodeSize
     FROM active_authors;
