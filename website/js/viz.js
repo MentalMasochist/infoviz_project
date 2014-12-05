@@ -92,8 +92,24 @@
           height = dim[1];
 
       //console.log(response['extra_viz_data']);
-      extra_viz(response['extra_viz_data'], width, height); // to be competed in latter stages
-    };
+      f_extra(response['extra_viz_data'], width, height); // to be competed in latter stages
+    
+      };
+
+      function f_extra(response, width, height) { 
+        var sampleSVG = d3.select("#extra")
+            .append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%");  
+
+        console.log(response);
+        response.forEach(function(d)
+        {
+          console.log(d);
+        });
+     };
+
+
 
     function get_dim(id) {
       var w = window, d = document, e = d.documentElement,
@@ -168,14 +184,39 @@
 
     function subject_network_viz(response, width, height) {
 
-      function click(d) {
-        //console.log(d.className);
-        if (document.getElementById('subjects').value)
-          document.getElementById('subjects').value += ', ' + d.className;
-        else
-          document.getElementById('subjects').value = d.className;
-        //console.log(document.getElementById('subjects').value);
-        };
+    function click(d) {
+        if (document.getElementById('subjects').value.length == 0) {
+          document.getElementById('subjects').value += ("\""+d.fullName+"\"");
+        } else {
+          document.getElementById('subjects').value += ', ' + "\""+d.fullName+"\"";           
+        }
+        document.getElementById("search_arXiv_button").click();
+      };
+
+      function reset() {
+        
+      }
+
+
+      // setting colors
+      var d_subjColor = new Array();
+
+      d_subjColor["Astrophysics"] = "#1f77b4";
+      d_subjColor["Computer Science"] = "#aec7e8";
+      d_subjColor["Condensed Matter"] = "#ff7f0e";
+      d_subjColor["Database Applications"] = "#ffbb78";
+      d_subjColor["High Energy Physics"] = "#98df8a";
+      d_subjColor["Mathematics"] = "#ff9896";
+      d_subjColor["Nonlinear Sciences"] = "#9467bd";
+      d_subjColor["Other"] = "#c5b0d5";
+      d_subjColor["Physics"] = "#c49c94";
+      d_subjColor["Quantitative Biology"] = "#e377c2";
+      d_subjColor["Quantitative Finance"] = "#f7b6d2";
+      d_subjColor["Statistics"] = "#7f7f7f";
+      d_subjColor["math"] = "#bcbd22";
+      d_subjColor["msc"] = "#dbdb8d";
+      d_subjColor["multi"] = "#17becf";
+      d_subjColor["physics.bio"] = "#9edae5";
 
 
       var min_dim = Math.min(width,height);
@@ -213,11 +254,11 @@
         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
       node.append("title")
-        .text(function(d) { return d.className + ": " + format(d.value); });
+        .text(function(d) { return d.packageName + "\n" + d.className + "papers: " + format(d.value); });
 
       node.append("circle")
         .attr("r", function(d) { return d.r; })
-        .style("fill", function(d) { return color(d.packageName); });
+        .style("fill", function(d) { return d_subjColor[d.packageName]; });
 
       node.append("text")
         .attr("dy", ".3em")
@@ -227,24 +268,63 @@
       function processData(response) {
         var classes = [];
         response.forEach(function (d){
-            classes.push({packageName: d.subject_name, className: d.subject_name, value: d.count_sub});
+            classes.push({fullName: d.full_subject_name, packageName: d.gen_subject_name, className: d.subject_name, value: d.count_sub});
           }
         );
           return {children: classes};
-      }  
-    };
+      }
+
+
+        var dataNest = d3.nest()
+        .key(function(d) {return d.gen_subject_name;})
+        .entries(response);
+
+
+        var legend = svg.append("g")
+        .attr("class", "legend")
+            //.attr("x", w - 65)
+            //.attr("y", 50)
+        .attr("height", 100)
+        .attr("width", 100)
+        .attr('transform', 'translate(-50,20)')    
+          
+        
+        legend.selectAll('rect')
+          .data(dataNest)
+          .enter()
+          .append("rect")
+        .attr("x", width - 65)
+          .attr("y", function(d, i){ return i *  20;})
+        .attr("width", 10)
+        .attr("height", 10)
+        .style("fill", function(d) { 
+            var color = d_subjColor[d["key"]];
+            return color;
+          })
+          
+        legend.selectAll('text')
+          .data(dataNest)
+          .enter()
+          .append("text")
+        .attr("x", width - 52)
+          .attr("y", function(d, i){ return i *  20 + 9;})
+        .text(function(d) {
+            var text = d["key"];
+            return text;
+          });
+          };
 
     function author_network_viz(response, width, height) {
 
-
-    function click(d) {
-        console.log(d.name);
-        if (document.getElementById('authors').value)
-          document.getElementById('authors').value += ', ' + d.name;
-        else
-          document.getElementById('authors').value = d.name;
-        //console.log(document.getElementById('subjects').value);
-        }; 
+     function click(d) {
+        if (document.getElementById('authors').value.length == 0) {
+          document.getElementById('authors').value += ("\""+d.name+"\"");
+        } else {
+          document.getElementById('authors').value += ', ' + "\""+d.name+"\"";           
+        }
+        document.getElementById("search_arXiv_button").click();
+      };
+      
 
       var zoom = d3.behavior.zoom()
         .scaleExtent([0.001, 10])
@@ -411,18 +491,3 @@
           .on("mouseout", function(){d3.select(this).style("fill", "white");});
     };
 
-    function extra_viz(response, width, height) { 
-      var sampleSVG = d3.select("#extra")
-          .append("svg")
-          .attr("width", "100%")
-          .attr("height", "100%");  
-
-      console.log(response);
-      //console.log('hello!!!');
-      response.forEach(function(d)
-      {
-        console.log(d);
-      });
-
-
-     };
