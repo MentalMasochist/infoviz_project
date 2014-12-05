@@ -65,7 +65,7 @@ $(document).ready( function() {
           d3.select("#viz_trend").select("svg").remove();
           d3.select("#viz_graph_subject").select("svg").remove();
           d3.select("#viz_graph_author").select("svg").remove();
-          d3.select("#extra").select("svg").remove();
+          d3.select("#extra").select("table").remove();
           var id = 'viz_trend';
           var dim = get_dim(id),
               width = dim[0],
@@ -99,20 +99,92 @@ $(document).ready( function() {
         }
       };
 
+      var paper_ct = 10;
       function f_extra(response, width, height) { 
-        var sampleSVG = d3.select("#extra")
-            .append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%");  
+        var max = response.length;
+        var min = 0;
+        var r = new Array(paper_ct);
+        function getRandomArbitrary(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+          }
+        for (var i=0;i<paper_ct;i++){
 
-        console.log(response);
-        response.forEach(function(d)
-        {
-          console.log(d);
+            r[i] = getRandomArbitrary(min, max);
+            if (i >= max) {
+              r[i] = max+1; // needs to be larger than max
+              continue;
+            }
+            for (var j = 0; j<i; j++)
+            {
+              if (r[i] == r[j])
+                {
+                  i--;
+                  break;
+                }
+            }
+            
+        };
+        r.sort(function(a,b){return a - b});
+        console.log(r);
+
+        var extra_viz_data = [];
+        var i = 0;
+        var ind = 0;
+
+        response.forEach(function(d){
+          console.log("test");
+          if (r[ind] == i) {
+            console.log(d['title'], d['link']);
+            extra_viz_data.push({title: d['title'].substring(0, 50).concat('...'), link: d['link']});
+            ind++;
+          } else if (ind >= max) {
+            extra_viz_data.push({title: "", link: ""});
+          } else if (ind >= paper_ct) {
+            return;          
+          }
+          i++;
         });
+
+        for (var i=ind;i<paper_ct;i++){
+          extra_viz_data.push({title: "", link: ""});
+        }
+        console.log(extra_viz_data);
+        console.log(ind);
+
+
+        
+        function tabulate(data, columns) {
+            var table = d3.select("#extra").append("table")
+                          .attr("width", "100%")
+                          .attr("height", "100%"),
+                thead = table.append("thead"),
+                tbody = table.append("tbody");
+
+            // append the header row
+            thead.append("tr")
+                .selectAll("th")
+                .data(columns)
+                .enter()
+                .append("th")
+                    .text(function(column) { return "Selected Papers..." });
+
+            // create a row for each object in the data
+            var rows = tbody.selectAll("tr")
+                .data(data)
+                .enter()
+                .append("tr")
+                .html(function(d,i){ return "<a href=\"" + d.link + "\" target=\"_blank\"> " + d.title + "</a>"; });
+                // .attr("style", "font-family: Courier; height: 30px; overflow:hidden");
+                // .attr("overflow", "hidden");
+
+            
+            return table;
+        }
+
+        var table = tabulate(extra_viz_data, ["title"]);
+
+
      };
-
-
 
     function get_dim(id) {
       var w = window, d = document, e = d.documentElement,
@@ -478,19 +550,19 @@ $(document).ready( function() {
     };
 
 
-    function word_cloud_viz(data) {
-      var sampleSVG = d3.select("#viz_word_cloud")
-          .append("svg")
-          .attr("width", "100%")
-          .attr("height", "100%");    
+    // function word_cloud_viz(data) {
+    //   var sampleSVG = d3.select("#viz_word_cloud")
+    //       .append("svg")
+    //       .attr("width", "100%")
+    //       .attr("height", "100%");    
 
-      sampleSVG.append("circle")
-          .style("stroke", "gray")
-          .style("fill", "white")
-          .attr("r", 40)
-          .attr("cx", 50)
-          .attr("cy", 50)
-          .on("mouseover", function(){d3.select(this).style("fill", "grey");})
-          .on("mouseout", function(){d3.select(this).style("fill", "white");});
-    };
+    //   sampleSVG.append("circle")
+    //       .style("stroke", "gray")
+    //       .style("fill", "white")
+    //       .attr("r", 40)
+    //       .attr("cx", 50)
+    //       .attr("cy", 50)
+    //       .on("mouseover", function(){d3.select(this).style("fill", "grey");})
+    //       .on("mouseout", function(){d3.select(this).style("fill", "white");});
+    // };
 
