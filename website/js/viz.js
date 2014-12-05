@@ -249,7 +249,7 @@ $(document).ready( function() {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("Frequency");
+            .text("Annual Frequency");
 
         svg.append("path")
             .datum(root)
@@ -514,7 +514,7 @@ $(document).ready( function() {
         .text(function(d) { return d.name; });
 
         node.append("svg:title")
-          .text(function(d) { return d.name; });
+          .text(function(d) { return d.name +'\npapers: '+d.nodeSize; });
 
         container.style("opacity", 1e-6)
           .transition()

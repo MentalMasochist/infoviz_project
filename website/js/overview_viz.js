@@ -163,7 +163,7 @@
           .filter(function(d) { return !d.children; }))
           .enter().append("g")
           .attr("class", "node")  
-		  .on("click", function(d){click(d)})
+		  .on("dblclick", function(d){click(d)})
           .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
         node.append("title")
@@ -328,7 +328,7 @@
             .data(json.nodes)
             .enter().append("svg:g")
             .attr("class", "node")
-            .on("click", function(d){click(d)})
+            .on("dblclick", function(d){click(d)})
 
           node.append("svg:circle")
             .attr("r", 3)
@@ -367,7 +367,7 @@
         .text(function(d) { return d.name; });
 
         node.append("svg:title")
-          .text(function(d) { return d.name; });
+          .text(function(d) { return d.name +'\npapers: '+d.nodeSize; });
 
         container.style("opacity", 1e-6)
           .transition()
