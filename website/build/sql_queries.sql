@@ -500,3 +500,74 @@ SELECT aa1.id AS source, aa2.id AS target, count(a1.paper_id) as value
         ON aa2.name = a2.author_name   
     WHERE  aa1.id is not NULL AND aa2.id is not NULL 
     GROUP BY a1.author_name, a2.author_name;
+
+
+
+-- --
+-- -- Testing Dates
+-- --
+
+
+-- authors temp table
+DROP TABLE IF EXISTS temp_authors;
+CREATE TEMPORARY TABLE temp_authors AS (
+SELECT a.paper_id
+    FROM authors a
+    WHERE MATCH (a.author_name) AGAINST ('"Lisa Randall"' IN BOOLEAN MODE)
+    GROUP BY a.paper_id
+    HAVING count(a.paper_id) = 1
+);
+
+
+-- 
+-- combine into temporary table
+-- 
+
+-- combine temporary tables into an active table set
+DROP TABLE IF EXISTS active_papers;
+CREATE TEMPORARY TABLE active_papers AS (
+SELECT DISTINCT tp.paper_id
+    FROM papers tp
+    INNER JOIN temp_authors ta 
+    ON ta.paper_id = tp.paper_id
+    INNER JOIN subjects ts 
+    ON ts.paper_id = tp.paper_id
+);
+
+
+-- 
+-- visualization specific queries
+-- 
+
+-- TREND GRAPH
+-- -- by year-month
+-- SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
+--     FROM (
+--         SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-%m') AS date 
+--             FROM papers p 
+--             INNER JOIN active_papers ap 
+--                 ON p.paper_id = ap.paper_id 
+--                 GROUP BY year(dt_created), month(dt_created)
+--         ) selected 
+--     RIGHT JOIN (
+--         SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y-%m') AS date 
+--             FROM papers 
+--             GROUP BY year(dt_created), month(dt_created)) total 
+--     ON selected.date = total.date
+--     WHERE total.date > 1900;
+
+-- by year
+SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10)) as freq, CONCAT(total.date,'-01') AS date
+    FROM (
+        SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y') AS date 
+            FROM papers p 
+            INNER JOIN active_papers ap 
+                ON p.paper_id = ap.paper_id 
+                GROUP BY year(dt_created)
+        ) selected 
+    RIGHT JOIN (
+        SELECT count(paper_id) AS count_paper,  DATE_FORMAT(dt_created, '%Y') AS date 
+            FROM papers 
+            GROUP BY year(dt_created)) total 
+    ON selected.date = total.date
+    WHERE total.date > 1900;

@@ -41,12 +41,16 @@ $conn = mysql_select_db($database, $server);
 // define variables
 $thres_subjects = 0;
 $thres_authors = 0;
+$start_year = 1992;
+$end_year = 2014;
 
 $form_subjects = $_POST["subjects"];
 $form_authors = $_POST["authors"];
 $form_papers = $_POST["keywords"];
 $thres_subjects = $_POST["thres_subject"];
 $thres_authors = $_POST["thres_author"];
+$start_year = $_POST["start_year"];
+$end_year = $_POST["end_year"];
 
 $query_subjects = "";
 $query_authors = "";
@@ -186,11 +190,27 @@ if ($debug) {
 $query = "CREATE TEMPORARY TABLE active_papers AS (  ".
          " SELECT DISTINCT tp.paper_id               ".
          "     FROM ".$table_papers." tp             ".
-         "     INNER JOIN ".$table_authors." ta      ".
-         "     ON ta.paper_id = tp.paper_id          ".
-         "     INNER JOIN ".$table_subjects." ts     ".
-         "     ON ts.paper_id = tp.paper_id          ".
+         "     JOIN ".$table_authors." ta      ".
+         "     JOIN ".$table_subjects." ts     ".
+         "     WHERE ts.paper_id = tp.paper_id          ".
+         "     AND ta.paper_id = tp.paper_id          ".
+         "     AND YEAR(tp.dt_created) >= ".$start_year."        ".
+         "     AND YEAR(tp.dt_created) <= ".$end_year."                 ".
          " );                                        ";
+
+
+
+// $query = "CREATE TEMPORARY TABLE active_papers AS (  ".
+//          " SELECT DISTINCT tp.paper_id               ".
+//          "     FROM ".$table_papers." tp             ".
+//          "     INNER JOIN ".$table_authors." ta      ".
+//          "     ON ta.paper_id = tp.paper_id          ".
+//          "     INNER JOIN ".$table_subjects." ts     ".
+//          "     ON ts.paper_id = tp.paper_id          ".
+//          " );                                        ";
+
+
+
 
 if ($debug) {
 	echo $query;

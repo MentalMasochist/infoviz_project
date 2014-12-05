@@ -243,6 +243,16 @@
 
     function ov_author_network_viz(width, height) { 
 
+     function click(d) {
+        if (document.getElementById('authors').value.length == 0) {
+          document.getElementById('authors').value += ("\""+d.name+"\"");
+        } else {
+          document.getElementById('authors').value += ', ' + "\""+d.name+"\"";           
+        }
+        document.getElementById("search_arXiv_button").click();
+      };
+
+
       var zoom = d3.behavior.zoom()
         .scaleExtent([0.001, 10])
         .on("zoom", zoomed);
@@ -318,6 +328,7 @@
             .data(json.nodes)
             .enter().append("svg:g")
             .attr("class", "node")
+            .on("click", function(d){click(d)})
 
           node.append("svg:circle")
             .attr("r", 3)

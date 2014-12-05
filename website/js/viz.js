@@ -1,6 +1,4 @@
-
-
-    $(document).ready( function() {
+$(document).ready( function() {
 
       // variable to hold request
       var request;
@@ -58,42 +56,47 @@
       });
   
     function main_viz(response) {
-      
-      d3.select("#viz_trend").select("svg").remove();
-      d3.select("#viz_graph_subject").select("svg").remove();
-      d3.select("#viz_graph_author").select("svg").remove();
-      //d3.select("#extra").select("svg").remove();
-      var id = 'viz_trend';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
+      if (response['subject_data'].length == 0 || response['author_data'].length == 0)
+        {
+          console.log(response);
+          alert('No Results Found!\nPlease enter a different search.');
 
-      trend_viz(response['trending_data'], width, height);
-     
-      var id = 'viz_graph_author';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
-      
-      subject_network_viz(response['subject_data'], width, height);
-      
-      var id = 'viz_graph_subject';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
+        } else {
+          d3.select("#viz_trend").select("svg").remove();
+          d3.select("#viz_graph_subject").select("svg").remove();
+          d3.select("#viz_graph_author").select("svg").remove();
+          d3.select("#extra").select("svg").remove();
+          var id = 'viz_trend';
+          var dim = get_dim(id),
+              width = dim[0],
+              height = dim[1];
 
-      author_network_viz(response['author_data'], width, height);
+        trend_viz(response['trending_data'], width, height);
+       
+        var id = 'viz_graph_author';
+        var dim = get_dim(id),
+            width = dim[0],
+            height = dim[1];
+        
+        subject_network_viz(response['subject_data'], width, height);
+        
+        var id = 'viz_graph_subject';
+        var dim = get_dim(id),
+            width = dim[0],
+            height = dim[1];
 
-      // word_cloud_viz(data);  // to be competed in latter stages
-      
-      var id = 'extra';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
+        author_network_viz(response['author_data'], width, height);
 
-      //console.log(response['extra_viz_data']);
-      f_extra(response['extra_viz_data'], width, height); // to be competed in latter stages
-    
+        // word_cloud_viz(data);  // to be competed in latter stages
+        
+        var id = 'extra';
+        var dim = get_dim(id),
+            width = dim[0],
+            height = dim[1];
+
+        //console.log(response['extra_viz_data']);
+        f_extra(response['extra_viz_data'], width, height); // to be competed in latter stages
+        }
       };
 
       function f_extra(response, width, height) { 
@@ -404,7 +407,7 @@
             .on("click", function(d){click(d)})
 
           node.append("svg:circle")
-            .attr("r", 3)
+            .attr("r",  function(d) { return 1+Math.sqrt(d.nodeSize); })
               .style("fill", function(d) { return fill(d.group); })
           .call(force.drag).on("mouseover", fade(.1)).on("mouseout", fade(1));
             //.call(force.drag);
