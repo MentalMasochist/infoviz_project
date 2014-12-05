@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS papers;
 
 CREATE TABLE IF NOT EXISTS papers (
     paper_id VARCHAR(150) NOT NULL,
+    hyperlink VARCHAR(150) NOT NULL,
     title TEXT NOT NULL,
     dt_created DATE NOT NULL,
     set_spec VARCHAR(40) NOT NULL,
@@ -43,7 +44,7 @@ LOAD DATA LOCAL INFILE 'papers.csv'
     INTO TABLE papers
     FIELDS TERMINATED BY '\t'
     LINES TERMINATED BY '\n'
-    (paper_id, title, dt_created, set_spec, description); 
+    (paper_id, hyperlink, title, dt_created, set_spec, description); 
 
 -- authors table
 DROP TABLE IF EXISTS authors;
