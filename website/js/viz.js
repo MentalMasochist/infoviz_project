@@ -63,7 +63,7 @@ $(document).ready( function() {
         } else {
           d3.select("#viz_trend").select("svg").remove();
           d3.select("#viz_graph_subject").select("svg").remove();
-          d3.select("#viz_graph_author").select("svg").selectAll("*").remove();
+          d3.select("#viz_graph_author").selectAll("*").remove();
           d3.select("#viz_graph_author").style({
               'background-image': 'url(\"./css/author-bg.png\")',
               'background-repeat': 'no-repeat',
