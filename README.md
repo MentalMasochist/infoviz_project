@@ -14,34 +14,18 @@ Notes
 
 ToDo
 ----
+- [ ] replace overview Author viz with text
+- [ ] redo video with new Author menu
+- [ ] check box for normalization of trendline
+	- maybe use radio button?
+- [ ] see if you can add word cloud in somewhere
+- [ ] see if you need a timeout error (need to start producing coded errors: i.e. return 999 for timeout)
 - [ ] when you caontact Cornell, see if they have data for how many times a paper has been downloaded (or how many times a page has been clicked)
 	- this will give a basis for ranking the papers
-- [ ] check what search can be done with subject
-- [ ] need to handle edge cases
-	- [ ] when there are no results found
-	- [ ] opening webpage
-			- use some static data here
-	- [ ] graph titles
-
-- [not necc] normalization
-- [not going to do] word cloud
-
 - [ ] is there a way to multi-thread the queries on the php side? (I know you cant do this inside mysql for the engines present)
-- [ ] need a time-out warning (need to start producing coded errors: i.e. return 999 for timeout)
-- [ ] have normalization be an option
-	- normalization makes sense on a large search basis, but not for looking at individuals (this will most surely always go down)
 - [ ] figure out how to stop mysql on refresh (I have to do this with terminal now if I kill a query) 
-- [ ] split visualizations and queries such that each viz loads when the data is ready (not sure if this is possible or if will cause a lot of extra work)
-- [ ] sometimes the word "and" is in the author page -- need to remove this 
-- [ ] apply a power function to collaboration graph such that the increase edge weight is magnified
-- [ ] put limits on search based on either a top X or by paper count (i.e.\ importance)
-- [ ] find all msc codes
-- [ ] build out visualizations
-	- [x] trends
-	- [x] subject graph
-	- [ ] author graph
-	- [not necc] word cloud
-	- [not necc] extra
+- [ ] put an upper limit on the search return (50?)
+- [ ] replace all code subjects with subject names
 
  
 Additional Notes/Concerns
