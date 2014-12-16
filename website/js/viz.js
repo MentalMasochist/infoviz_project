@@ -130,16 +130,13 @@ $(document).ready( function() {
             
         };
         r.sort(function(a,b){return a - b});
-        console.log(r);
 
         var extra_viz_data = [];
         var i = 0;
         var ind = 0;
 
         response.forEach(function(d){
-          console.log("test");
           if (r[ind] == i) {
-            console.log(d['title'], d['link']);
             extra_viz_data.push({title: d['title'].substring(0, 50).concat('...'), link: d['link']});
             ind++;
           } else if (ind >= max) {
@@ -153,10 +150,6 @@ $(document).ready( function() {
         for (var i=ind;i<paper_ct;i++){
           extra_viz_data.push({title: "", link: ""});
         }
-        console.log(extra_viz_data);
-        console.log(ind);
-
-
         
         function tabulate(data, columns) {
             var table = d3.select("#extra").append("table")
