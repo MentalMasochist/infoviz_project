@@ -58,13 +58,13 @@ body {
 #viz_graph_author {
 	width: 42%;
 	height: 55%;
-	background-image: url("author-bg.png");
+	float: left;
+	background-color: #eee;
+/*	background-image: url("author-bg.png");
 	background-repeat: no-repeat;
 	background-position: 0% 0%;
-	background-color: #eee;
-	float: left;
 	box-shadow: 0 0 20px #c1c1c1 inset;
-}
+*/}
 
 #viz_word_cloud {
 	width: 0%;

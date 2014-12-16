@@ -23,11 +23,11 @@
           height = dim[1];      
       ov_subject_network_viz(width, height);
 
-      var id = 'viz_graph_author';
-      var dim = get_dim(id),
-          width = dim[0],
-          height = dim[1];
-      ov_author_network_viz(width, height);
+      // var id = 'viz_graph_author';
+      // var dim = get_dim(id),
+      //     width = dim[0],
+      //     height = dim[1];
+      // ov_author_network_viz(width, height);
       
 
       // word_cloud_viz(data);  // to be competed in latter stages

@@ -41,7 +41,30 @@
 
     <div id="viz_graph_subject"></div>  
 
-    <div id="viz_graph_author"></div>
+    <div id="viz_graph_author">
+      <svg>
+        <h2>Welcome to the Arxiv.org Connectivity Vizualization Suite!</h2>
+        <p>Search and explore the entire set of <a href="http://arxiv.org/" target="_blank">arXiv.org</a> eprints through menu inputs and visual interactations to discover trends, distributions and connections. <b>"search arXiv"</b> returns the intersection of all menu inputs. <b>Subjects</b>, <b>Authors</b>, and <b>Keywords</b> support comma-separated <a href="http://dev.mysql.com/doc/refman/5.5/en/fulltext-boolean.html" target="_blank">Boolean Full-Text Searches</a>.</p>
+
+        <h2>Visualizations</h2>  
+        <dl>  
+          <dt><b>Submission Frequency</b></dt>
+            <dd>- Opening page shows total annual submissions.</dd>
+            <dd>- Search results show annual number of papers corresponding to the search.</dd>
+            <dd>- Menu option allows results to be normalized be total annual papers submitted.</dd>
+          <dt><b>Subject Distribution</b></dt>
+            <dd>- Opening page shows subject distribution of all of arXiv.org.</dd>
+            <dd>- Search result shows distribution of subjects corresponding to the search.</dd>
+            <dd>- Each bubble refers to a specific subject, with general subjects color coded.</dd>
+            <dd><b>- Clicking a bubble will add the subject to the search.</b></dd>
+          <dt><b>Author Network</b></dt>
+            <dd>- Search results show nodes of authors and edges connecting collaborators.</dd>
+            <dd><b>- Clicking an author node will add the author to the search.</b></dd>
+          <dt><b>Selected Papers</b></dt>
+            <dd>- Links to 10 randomly selected papers from the search results.</dd>
+        </dl>
+      </svg>
+    </div>
 
     <div id="extra"></div>  
 

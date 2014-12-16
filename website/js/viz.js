@@ -1,5 +1,4 @@
 $(document).ready( function() {
-
       // variable to hold request
       var request;
       
@@ -64,7 +63,13 @@ $(document).ready( function() {
         } else {
           d3.select("#viz_trend").select("svg").remove();
           d3.select("#viz_graph_subject").select("svg").remove();
-          d3.select("#viz_graph_author").select("svg").remove();
+          d3.select("#viz_graph_author").select("svg").selectAll("*").remove();
+          d3.select("#viz_graph_author").style({
+              'background-image': 'url(\"./css/author-bg.png\")',
+              'background-repeat': 'no-repeat',
+              'background-position': '0% 0%',
+              'box-shadow': '0 0 20px #c1c1c1 inset'
+            });
           d3.select("#extra").select("table").remove();
           var id = 'viz_trend';
           var dim = get_dim(id),
