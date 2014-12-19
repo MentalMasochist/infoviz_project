@@ -9,9 +9,19 @@
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src='js/viz.js'></script>
     <script src='js/overview_viz.js'></script>
+
+    <script type="text/javascript">
+      // $(document).ready(function(){        
+      //   $('<div class="tl"></div><div class="tr"></div><div class="bl"></div><div class="br"></div>').appendTo("div.div.single-field");
+      // });
+    </script>
+
   </head> 
   
-  <style>  </style>
+  <style>  
+  </style>
+
+
 
   <body style="height:100%" onload="overview_main_viz()">
 
@@ -27,16 +37,56 @@
 
     <div id="menu">
       <!-- <form id="form_menu" method="post" action="query.php"> -->
-      <form id="form_menu" method="post">
-          Subjects: <input type="text" name="subjects" style="width:90%" id="subjects"> <br>
-          Subject Max Return: <input type="number" name="thres_subject" min="1" value="25" max="50" style="width:35%"> <br>
-          Authors: <input type="text" name="authors" style="width:90%" id="authors"> <br>
-          Author Max Return:  <input type="number" name="thres_author" min="1" value="25" max="50" style="width:36.5%"> <br>
-          Keywords: <input type="text" name="keywords" style="width:90%" id="keywords"> <br>
-          Start Year:  <input type="number" name="start_year"  min="1992" value="1992" style="width:30%" id="start_year"> <br>
-          End Year: &nbsp  <input type="number" name="end_year"  min="1992" value="2014" style="width:30%" id="end_year"> <br>
-          <input type="submit" value="search arXiv" id="search_arXiv_button" align="left"> <input type="reset" value="clear" id="reset_button" align="right"> <br>   
+      <form id="form_menu" method="post" style="display: inline-block">
+
+        <div style="display:block">
+          <label>Subjects:</label>
+          <input type="text" name="subjects" id="subjects" style="width:90%"></input>
+        </div>
+        
+        <table>
+            <tr>
+              <td style="white-space: nowrap; width: 75%"><label>Subject Max Return:</label></td>
+              <td><input type="number" name="thres_subject" min="1" value="25" max="50" style="width:2.5em"></input></td>
+            </tr>
+        </table>
+
+        <div style="display:block">
+          <label>Authors:</label> 
+          <input type="text" name="authors" style="width:90%" id="authors"></input>
+        </div>
+
+        <table>
+            <tr>
+                <td style="white-space: nowrap; width: 75%"><label>Author Max Return:</label></td>
+                <td><input type="number" name="thres_author" min="1" value="25" max="50" style="width:2.5em"></input></td>
+            </tr>
+        </table>
+
+        <div style="display:block">
+          <label>Keywords:</label>
+          <input type="text" name="keywords" style="width:90%" id="keywords"></input>
+        </div>
+
+        <table>
+          <tr>
+            <td style="white-space:nowrap; width:30%"><label>Start Year:</label></td>
+            <td><input type="number" name="start_year" min="1992" value="1992"  style="width:40%" id="start_year"></input></td>
+          <tr>
+          
+          <tr>
+            <td style="white-space:nowrap"><label>End Year:</label></td>
+            <td><input type="number" name="end_year" min="1992" value="2014" style="width:40%" id="end_year"></input></td>
+          <tr>
+        </table>
+
+        <div style="display:block; margin: 0 auto">
+          <input type="submit" value="search arXiv" id="search_arXiv_button" style="width:60%"> </input>
+          <input type="reset" value="clear" id="reset_button"  style="width:30%"></input>
+        </div>
+
       </form> 
+
     </div>  
 
     <div id="viz_graph_subject"></div>  
