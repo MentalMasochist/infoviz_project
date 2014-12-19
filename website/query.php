@@ -31,7 +31,7 @@ function f_mysql_query($query) {
 $dbhost = 'localhost';
 $dbuser = 'root';
 // $dbpass = '';
-$dbpass = 'e5ye5ye5y';
+$dbpass = '';
 $database = 'arXiv_db';
 
 // connect to database
