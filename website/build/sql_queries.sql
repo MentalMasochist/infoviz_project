@@ -453,7 +453,8 @@ SELECT  CAST(coalesce(selected.count_paper,0)/total.count_paper as DECIMAL(12,10
 SELECT count(p.paper_id) AS count_paper, DATE_FORMAT(dt_created, '%Y-01') AS date 
     FROM papers p 
     WHERE year(dt_created) >= 1992
-    GROUP BY year(dt_created);
+    GROUP BY year(dt_created)
+    LIMIT 50;
 
 -- subject chart
 -- shows the most contributed subjects
