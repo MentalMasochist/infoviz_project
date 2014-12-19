@@ -139,7 +139,7 @@ def create_db_files():
 
 
 if __name__ == "__main__":
-    # move_all()
-    # print "\nharvested files moved to master.oai\n"
+    move_all()
+    print "\nharvested files moved to master.oai\n"
     create_db_files()
     print "\ndb read csv files complete\n"
