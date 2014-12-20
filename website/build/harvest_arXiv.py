@@ -45,7 +45,6 @@ def main():
 		f_data = open(fname_data,'a')
 		# append records
 		records = sickle.ListRecords(**{"metadataPrefix":"oai_dc", "set":setSpec, "from":dt_last_harvest}) 
-		ct = 0
 		for record in records:
 			ct_records += 1
 			f_data.write(str(record.metadata) + '\n')
