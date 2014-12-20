@@ -14,25 +14,42 @@ Notes
 
 ToDo
 ----
-- [ ] replace overview Author viz with text
-- [ ] redo video with new Author menu
+
+
+- [ ] automated update of website data
+	- [x] harvesting
+	- [x] database update
+	- [x] data preprocessing
+	- [x] write script to create overview
+		- [x] trend graph
+		- [x] subject chart
+	- [ ] set up master shell script file
+		- order:
+			1. harvest data from Arvix
+			2. data preprocessing
+			3. updated databases
+			4. make trend overview data 
+			5. make subject overview data
+	- [ ] put master file in cron
 - [ ] check box for normalization of trendline
 	- maybe use radio button?
 - [ ] see if you can add word cloud in somewhere
-- [ ] see if you need a timeout error (need to start producing coded errors: i.e. return 999 for timeout)
-- [ ] when you caontact Cornell, see if they have data for how many times a paper has been downloaded (or how many times a page has been clicked)
+	- maybe top right corner (and trend line smaller)
+- [ ] make trend line to be interactive for year selections
+- [ ] when you contact Cornell, see if they have data for how many times a paper has been downloaded (or how many times a page has been clicked)
 	- this will give a basis for ranking the papers
+- [ ] see if you need a timeout error (need to start producing coded errors: i.e. return 999 for timeout)
 - [ ] is there a way to multi-thread the queries on the php side? (I know you cant do this inside mysql for the engines present)
 - [ ] figure out how to stop mysql on refresh (I have to do this with terminal now if I kill a query) 
-- [ ] put an upper limit on the search return (50?)
 - [ ] replace all code subjects with subject names
+
+*Completed*
+- [x] put an upper limit on the search return (50?)
+- [x] redo video with new Author menu
+- [x] replace overview Author viz with text
 
  
 Additional Notes/Concerns
 -------------------------
 
-- In description and title replace \\n with space
-- some msc codes did not have mappings
-- description and title have been cleaned
 - how to deal with text encoding for non-english text?
-- need to think how to parse author names so searches are intuitive?
